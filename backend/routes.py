@@ -1,16 +1,28 @@
-from flask import request, jsonify
-from flask_mail import Mail, Message
-from models import db, User, Product, Order, create_user, get_user_by_username, create_product, get_products_by_farmer, get_all_products, create_order, get_orders_by_customer, get_orders_by_farmer, update_order_status, delete_all_users, get_all_users, get_user_by_id, update_user, get_user_profile, delete_user, get_all_orders, get_billing_report, get_purchase_requests, accept_order, reject_order, ship_order, deliver_order, get_users_by_role, is_password_unique, user_exists, is_username_role_unique, is_admin_username, get_order_by_id
+from flask import Flask, request, jsonify
+from models import db, Product, Order, create_user, get_user_by_username, create_product, get_products_by_farmer, get_all_products, create_order, get_orders_by_customer, get_orders_by_farmer, update_order_status, delete_all_users, get_all_users, get_user_by_id, update_user, get_user_profile, delete_user, get_all_orders, get_billing_report, get_purchase_requests, accept_order, reject_order, ship_order, deliver_order, get_users_by_role, is_password_unique, user_exists, is_username_role_unique, is_admin_username, get_order_by_id
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from db_config import get_db_connection 
-import config
-from app import app, db
-from utils import send_email
+
+app = Flask(__name__) 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///product.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = '5180db6812cb8827379272f2c7014b1b4fd90c4d533b2d95ee3ef43a062b0895' 
+db.init_app(app) 
+jwt = JWTManager(app)
+
+with app.app_context():
+    db.create_all()  # Create all tables in the correct order
+    products = Product.query.all()
+    print(products)  
     
 @app.route('/')
 def home():
     return 'Welcome to Uzhavan Agri Sales Management API!'
+
+from flask import request, jsonify
+from werkzeug.security import generate_password_hash
+from models import create_user, is_username_role_unique, is_admin_username, is_password_unique
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -18,55 +30,26 @@ def register():
     username = data.get('username')
     password = data.get('password')
     role = data.get('role')
-    dob = data.get('dob')
-    gender = data.get('gender')
-    email = data.get('email')
-    contact = data.get('contact')
-    country = data.get('country')
-    state = data.get('state')
-    district = data.get('district')
-    taluk = data.get('taluk')
-    address = data.get('address')
-    pincode = data.get('pincode')
-    bank_name = data.get('bank_name')
-    branch_name = data.get('branch_name')
-    account_holder_name = data.get('account_holder_name')
-    ifsc_code = data.get('ifsc_code')
 
-    if not username or not password or not role or not dob or not gender or not email or not contact or not country or not state or not district or not address or not pincode or not bank_name or not branch_name or not account_holder_name or not ifsc_code:
-        return jsonify({'message': 'All fields except taluk are required'}), 400
+    if not username or not password or not role:
+        return jsonify({'message': 'Username, password, and role are required'}), 400
 
+    # Check if the username is unique for the given role
     if not is_username_role_unique(username, role):
         return jsonify({'message': 'Username already exists for this role. Please log in.'}), 400
 
+    # Check if the username is already used by an admin
     if role != 'admin' and is_admin_username(username):
         return jsonify({'message': 'Username already used by an admin. Please choose a different username.'}), 400
 
+    # Check if the password is unique for the given username
     if not is_password_unique(username, password):
         return jsonify({'message': 'Password already used for this username. Please choose a different password.'}), 400
 
+    # Hash the password before saving it
     hashed_password = generate_password_hash(password)
-    new_user = User(
-        username=username,
-        password=hashed_password,
-        role=role,
-        dob=dob,
-        gender=gender,
-        email=email,
-        contact=contact,
-        country=country,
-        state=state,
-        district=district,
-        taluk=taluk,
-        address=address,
-        pincode=pincode,
-        bank_name=bank_name,
-        branch_name=branch_name,
-        account_holder_name=account_holder_name,
-        ifsc_code=ifsc_code
-    )
-    db.session.add(new_user)
-    db.session.commit()
+    create_user(username, hashed_password, role)
+
     return jsonify({'message': 'User registered successfully'}), 201
 
 @app.route('/login', methods=['POST'])
@@ -86,57 +69,7 @@ def login():
 
     return jsonify({'message': 'Invalid Credentials'}), 401
 
-@app.route('/profile', methods=['GET'])
-@jwt_required()
-def view_profile():
-    current_user = get_jwt_identity()
-    user = get_user_by_id(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-    return jsonify(user.as_dict())
 
-@app.route('/profile', methods=['PUT'])
-@jwt_required()
-def update_profile():
-    current_user = get_jwt_identity()
-    data = request.get_json()
-    user = get_user_by_id(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-    
-    user.username = data.get('username', user.username)
-    user.contact = data.get('contact', user.contact)
-    user.country = data.get('country', user.country)
-    user.state = data.get('state', user.state)
-    user.district = data.get('district', user.district)
-    user.taluk = data.get('taluk', user.taluk)
-    user.address = data.get('address', user.address)
-    user.pincode = data.get('pincode', user.pincode)
-    user.bank_name = data.get('bank_name', user.bank_name)
-    user.branch_name = data.get('branch_name', user.branch_name)
-    user.account_holder_name = data.get('account_holder_name', user.account_holder_name)
-    user.ifsc_code = data.get('ifsc_code', user.ifsc_code)
-    db.session.commit()
-    return jsonify({'message': 'Profile updated successfully'})
-
-@app.route('/change_password', methods=['PUT'])
-@jwt_required()
-def change_password():
-    current_user = get_jwt_identity()
-    data = request.get_json()
-    user = get_user_by_id(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-    
-    old_password = data.get('old_password')
-    new_password = data.get('new_password')
-
-    if not check_password_hash(user.password, old_password):
-        return jsonify({'message': 'Old password is incorrect'}), 400
-
-    user.password = generate_password_hash(new_password)
-    db.session.commit()
-    return jsonify({'message': 'Password changed successfully'})
 
 
 
@@ -411,28 +344,23 @@ def delete_product():
 @app.route('/update_order_status', methods=['PUT'])
 @jwt_required()
 def update_order_status_route():
+    current_user = get_jwt_identity()
+    if current_user['role'] != 'farmer':
+        return jsonify({'message': 'Unauthorized access'}), 403
     data = request.get_json()
     order_id = data.get('order_id')
-    new_status = data.get('new_status')
+    status = data.get('status')
+    if not order_id or not status:
+        return jsonify({'message': 'Order ID and status are required'}), 400
+    try:
+        update_order_status(order_id, status)
+        return jsonify({'message': f'Order status updated successfully to {status}'}), 200
+    except mysql.connector.Error as err:
+        return jsonify({'message': f'Error: {err}'}), 500
 
-    order = Order.query.get(order_id)
-    if not order:
-        return jsonify({'message': 'Order not found'}), 404
 
-    order.status = new_status
-    db.session.commit()
 
-    customer = User.query.get(order.customer_id)
-    Order.notify_order_status(order, customer)
 
-    # Send email to customer
-    send_email(
-        subject="Order Status Updated",
-        recipients=[customer.email],
-        body=f"Your order with ID: {order.id} has been updated to {new_status}"
-    )
-
-    return jsonify({'message': 'Order status updated successfully'})
 
 
 
@@ -457,7 +385,7 @@ def customer_account():
 def create_order_route():
     data = request.get_json()
     current_user = get_jwt_identity()
-    customer_id = int(current_user['id'])
+    customer_id = int(current_user['id'])  # Ensure this is an integer
     product_id = data.get('product_id')
     quantity = data.get('quantity')
 
@@ -469,21 +397,7 @@ def create_order_route():
     )
     db.session.add(new_order)
     db.session.commit()
-
-    farmer = User.query.get(product_id)
-    Order.notify_new_order(new_order, farmer)
-
-    # Send email to farmer
-    send_email(
-        subject="New Order Created",
-        recipients=[farmer.email],
-        body=f"A new order has been created with ID: {new_order.id}"
-    )
-
     return jsonify({'id': new_order.id, 'message': 'Order created successfully'}), 201
-
-
-
 
 @app.route('/orders/status', methods=['POST'])
 @jwt_required()

@@ -1,53 +1,20 @@
-from db_config import db
 from db_config import get_db_connection
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 import smtplib
 from email.mime.text import MIMEText
-from datetime import date
-from app import db
-from utils import send_email
-class User(db.Model):    
-    __tablename__ = 'users'
+import uuid
+import secrets
+
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+
+class User(db.Model):
+    __tablename__ = 'users'  # Ensure correct table name
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    dob = db.Column(db.Date, nullable=False)
-    gender = db.Column(db.String(10), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    contact = db.Column(db.String(15), nullable=False)
-    country = db.Column(db.String(50), nullable=False)
-    state = db.Column(db.String(50), nullable=False)
-    district = db.Column(db.String(50), nullable=False)
-    taluk = db.Column(db.String(50), nullable=True)
-    address = db.Column(db.String(200), nullable=False)
-    pincode = db.Column(db.String(10), nullable=False)
-    bank_name = db.Column(db.String(100), nullable=False)
-    branch_name = db.Column(db.String(100), nullable=False)
-    account_holder_name = db.Column(db.String(100), nullable=False)
-    ifsc_code = db.Column(db.String(20), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-
-    def as_dict(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'dob': self.dob.isoformat(),
-            'gender': self.gender,
-            'email': self.email,
-            'contact': self.contact,
-            'country': self.country,
-            'state': self.state,
-            'district': self.district,
-            'taluk': self.taluk,
-            'address': self.address,
-            'pincode': self.pincode,
-            'bank_name': self.bank_name,
-            'branch_name': self.branch_name,
-            'account_holder_name': self.account_holder_name,
-            'ifsc_code': self.ifsc_code,
-            'role': self.role
-        }
 
 class Product(db.Model):
     __tablename__ = 'products'
@@ -68,28 +35,11 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)  # Include the quantity field
     status = db.Column(db.String(20), nullable=False, default='pending')
 
     def __repr__(self):
         return f'<Order {self.id}>'
-
-    @staticmethod
-    def notify_new_order(order, farmer):
-        subject = "New Order Created"
-        body = f"Dear {farmer.username},\n\nYou have received a new order.\nOrder ID: {order.id}\nProduct ID: {order.product_id}\nQuantity: {order.quantity}\nStatus: {order.status}\n\nBest regards,\nYour Sales Team"
-        send_email(subject, [farmer.email], body)
-
-    @staticmethod
-    def notify_order_status(order, customer):
-        subject = "Order Status Updated"
-        body = f"Dear {customer.username},\n\nThe status of your order has been updated.\nOrder ID: {order.id}\nNew Status: {order.status}\n\nBest regards,\nYour Sales Team"
-        send_email(subject, [customer.email], body)
-
-    
-    
-    
-    
 
 def is_id_unique(user_id):
     """Check if the generated ID is unique."""
@@ -166,9 +116,14 @@ def get_user_by_username(username, role):
     conn.close()
     return user
 
- 
 def get_user_by_id(user_id):
-    return User.query.get(user_id)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
 
 def get_users_by_role(role):
     conn = get_db_connection()
