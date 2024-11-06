@@ -8,5 +8,5 @@ def get_db_connection():
         host='localhost',
         user='root',
         password='PONajith#2005',  # Use your actual password
-        database='uzhavan_db'
+        database='uzhavu_db'
     )
