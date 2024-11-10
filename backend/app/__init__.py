@@ -3,12 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from .db_config import db
+from .models import User, Product, Order, PurchaseRequest, BillingReport
 from .routes import bp as main_bp  # Import the blueprint
 import os 
 from dotenv import load_dotenv
 
 def create_app():
     app = Flask(__name__)
+
+    # Load environment variables 
+    load_dotenv()
 
     # Configuration
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:PONajith#2005@localhost/uzhavu_db'
