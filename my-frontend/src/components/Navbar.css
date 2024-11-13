@@ -1,0 +1,40 @@
+/* src/components/Navbar.css */
+nav {
+    background-color: #388E3C; /* Green color to match the hero image */
+    height: 40px; /* Shorter height for the navbar */
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center; /* Center-align the items vertically */
+}
+
+nav ul li {
+    float: left;
+    display: flex;
+    align-items: center; /* Center-align the items vertically */
+    height: 40px; /* Ensure list items align with navbar height */
+}
+
+nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 0 15px; /* Adjust padding to fit the new height */
+    text-decoration: none;
+    font-size: 18px; /* Increase text size */
+}
+
+nav ul li a:hover {
+    background-color: #2E7D32; /* Darker green on hover */
+}
+
+.logo {
+    width: 30px; /* Adjust the size as needed */
+    height: 30px; /* Ensure height matches width for a perfect circle */
+    border-radius: 50%; /* Make the logo round */
+    margin-right: 10px; /* Add some space between the logo and the links */
+}
