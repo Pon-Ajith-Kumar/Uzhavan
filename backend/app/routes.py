@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
@@ -118,6 +118,14 @@ def login():
 
     access_token = create_access_token(identity={'id': user.id, 'username': user.username, 'role': user.role})
     return jsonify(access_token=access_token), 200
+
+# Logout route
+@bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    response = jsonify({'message': 'Logged out successfully'})
+    unset_jwt_cookies(response)
+    return response, 200
 
 # Profile and Password Management Routes
 #View Profile
