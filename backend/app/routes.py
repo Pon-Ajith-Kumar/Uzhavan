@@ -1,14 +1,15 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
+from flask_cors import CORS
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
 
 bp = Blueprint('main', __name__)
+CORS(bp, origins=['http://localhost:3000'])  # Enable CORS for the blueprint
 
 # General Routes
-
 #Home
 @bp.route('/')
 def home():
