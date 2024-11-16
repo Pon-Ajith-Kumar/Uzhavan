@@ -1,0 +1,17 @@
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Add some space between button and users list */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Add hover transition */
+  }
+  
+  .delete-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  }
+  

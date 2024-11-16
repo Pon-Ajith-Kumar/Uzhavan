@@ -1,13 +1,12 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
-from flask_cors import CORS
+from flask_cors import cross_origin
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
 
 bp = Blueprint('main', __name__)
-CORS(bp, origins=['http://localhost:3000'])  # Enable CORS for the blueprint
 
 # General Routes
 #Home
@@ -64,6 +63,7 @@ def create_user(username, hashed_password, role, email, contact, country, state,
         conn.close()
 
 @bp.route('/register', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -105,23 +105,26 @@ def register():
 
 #Login
 @bp.route('/login', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     role = data.get('role')  # Get role from the request data
     
-    # Fetch the user based on username and role 
+    # Fetch the user based on username and role
     user = User.query.filter_by(username=username, role=role).first()
     
     if not user or not check_password_hash(user.password, password):
         return jsonify({'message': 'Invalid Credentials'}), 401
 
     access_token = create_access_token(identity={'id': user.id, 'username': user.username, 'role': user.role})
-    return jsonify(access_token=access_token), 200
+    return jsonify(access_token=access_token, user={'role': user.role}), 200
+
 
 # Logout route
 @bp.route('/logout', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def logout():
     response = jsonify({'message': 'Logged out successfully'})
@@ -131,6 +134,7 @@ def logout():
 # Profile and Password Management Routes
 #View Profile
 @bp.route('/profile', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_profile():
     current_user = get_jwt_identity()
@@ -141,6 +145,7 @@ def view_profile():
 
 #Update Profile 
 @bp.route('/profile', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def update_profile():
     current_user = get_jwt_identity()
@@ -166,6 +171,7 @@ def update_profile():
 
 #Change Password
 @bp.route('/change_password', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def change_password():
     current_user = get_jwt_identity()
@@ -220,6 +226,7 @@ def delete_all_users():
         conn.close()
 
 @bp.route('/admin/users', methods=['GET', 'DELETE'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def manage_users():
     current_user = get_jwt_identity()
@@ -260,6 +267,7 @@ def delete_user(user_id):
     conn.close()
 
 @bp.route('/admin/users/<int:user_id>', methods=['POST', 'DELETE'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def manage_user(user_id):
     current_user = get_jwt_identity()
@@ -294,6 +302,7 @@ def get_users_by_role(role):
     return users
 
 @bp.route('/admin/list/<string:role>', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def list_users_by_role(role):
     current_user = get_jwt_identity()
@@ -312,9 +321,15 @@ def get_all_products():
     conn.close()
     return products
 
-@bp.route('/products', methods=['GET'])
+@bp.route('/admin/products', methods=['OPTIONS', 'GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def get_all_products_route():
+    current_user = get_jwt_identity()
+    if current_user['role'] != 'admin':
+        return jsonify({'message': 'Unauthorized access'}), 403
+    if request.method == 'OPTIONS':
+        return '', 204
     products = get_all_products()
     return jsonify({'products': products}), 200
 
@@ -330,6 +345,7 @@ def get_all_orders():
     return orders
 
 @bp.route('/admin/orders', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_all_orders():
     current_user = get_jwt_identity()
@@ -344,6 +360,7 @@ def get_purchase_requests():
     return [request.as_dict() for request in requests]
 
 @bp.route('/admin/purchase_requests', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def purchase_requests():
     current_user = get_jwt_identity()
@@ -358,6 +375,7 @@ def get_billing_report():
     return [r.as_dict() for r in report]
 
 @bp.route('/admin/billing_report', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def billing_report():
     current_user = get_jwt_identity()
@@ -377,6 +395,7 @@ def update_related_status(order_id, new_status):
 
 # Farmer/Seller Routes
 @bp.route('/create_product', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def create_product_route():
     data = request.get_json()
@@ -420,6 +439,7 @@ def get_products_by_farmer(farmer_id):
     return [product.as_dict() for product in products]
 
 @bp.route('/products/farmer', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def get_products_by_farmer_route():
     current_user = get_jwt_identity()
@@ -429,6 +449,7 @@ def get_products_by_farmer_route():
 
 #List All Products
 @bp.route('/products/list', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def list_all_products_route():
     products = Product.query.all()
@@ -445,6 +466,7 @@ def get_orders_by_farmer(farmer_id):
 
 #View Orders by Farmer
 @bp.route('/farmer/orders', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_orders_by_farmer():
     current_user = get_jwt_identity()
@@ -456,6 +478,7 @@ def view_orders_by_farmer():
 
 #Update Product
 @bp.route('/products/update', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def update_product():
     data = request.get_json()
@@ -499,6 +522,7 @@ def update_product():
     return jsonify({'message': 'Product updated successfully'})
 
 @bp.route('/products/delete', methods=['DELETE'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def delete_product():
     data = request.get_json()
@@ -532,6 +556,7 @@ def accept_order(order_id):
         conn.close()
 
 @bp.route('/farmer/accept_order', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def accept_order_route():
     current_user = get_jwt_identity()
@@ -586,6 +611,7 @@ def reject_order(order_id):
         conn.close()
 
 @bp.route('/farmer/reject_order', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def reject_order_route():
     current_user = get_jwt_identity()
@@ -640,6 +666,7 @@ def ship_order(order_id):
         conn.close()
 
 @bp.route('/farmer/ship_order', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def ship_order_route():
     current_user = get_jwt_identity()
@@ -694,6 +721,7 @@ def deliver_order(order_id):
         conn.close()
 
 @bp.route('/farmer/deliver_order', methods=['PUT'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def deliver_order_route():
     current_user = get_jwt_identity()
@@ -736,6 +764,7 @@ def deliver_order_route():
 # Customer Routes
 #Create Order
 @bp.route('/create_order', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def create_order_route():
     data = request.get_json()
@@ -793,6 +822,7 @@ def get_order_by_id(order_id):
     return Order.query.get(order_id)
 
 @bp.route('/orders/status', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def track_order_status():
     data = request.get_json()
@@ -827,6 +857,7 @@ def call_update_status_procedure(order_id, new_status):
         conn.close()
 
 @bp.route('/orders/cancel', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def cancel_order():
     data = request.get_json()
@@ -871,6 +902,7 @@ def get_orders_by_customer(customer_id):
     return Order.query.filter_by(customer_id=customer_id).all()
 
 @bp.route('/orders/customer', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def get_orders_by_customer_route():
     current_user = get_jwt_identity()
@@ -879,6 +911,7 @@ def get_orders_by_customer_route():
     return jsonify({'orders': [order.as_dict() for order in orders]})
 
 @bp.route('/customer/purchase_requests', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_purchase_requests():
     current_user = get_jwt_identity()
@@ -889,6 +922,7 @@ def view_purchase_requests():
     return jsonify({'purchase_requests': [request.as_dict() for request in purchase_requests]}), 200
 
 @bp.route('/customer/billing_reports', methods=['GET'])
+@cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_billing_reports():
     current_user = get_jwt_identity()

@@ -1,4 +1,12 @@
-/* src/components/Home.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+}
+
 .home {
     font-family: 'Arial', sans-serif;
 }
@@ -114,4 +122,14 @@
     margin-top: 15px;
     font-weight: bold;
     color: #2E7D32;
+}
+
+/* Ensure footer is at the bottom of the page and visible */
+footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    width: 100%;
 }

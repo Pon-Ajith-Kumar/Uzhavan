@@ -1,16 +1,15 @@
-// src/components/Login.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import logo from '../assets/images/logo.png'; // Ensure you have the logo image in this path
+import logo from '../assets/images/logo.png';
 
 function Login() {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     role: '',
-    rememberMe: false // Adding rememberMe to the state
+    rememberMe: false
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -26,20 +25,34 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', formData); // Correct backend URL
+      const response = await axios.post('http://localhost:5000/login', formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
       localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('username', response.data.user.name); // Store username
       if (formData.rememberMe) {
         localStorage.setItem('rememberMe', JSON.stringify(formData));
       } else {
         localStorage.removeItem('rememberMe');
       }
-      navigate('/dashboard'); // Navigate to the dashboard or home page after login
+      const userRole = response.data.user.role;
+      // Navigate based on user role
+      if (userRole === 'admin') {
+        navigate('/admin');
+      } else if (userRole === 'farmer') {
+        navigate('/farmer');
+      } else if (userRole === 'customer') {
+        navigate('/customer');
+      }
     } catch (error) {
       setError('Invalid Credentials');
     }
-  };  
-  
-  React.useEffect(() => {
+  };
+
+  useEffect(() => {
     const rememberedData = JSON.parse(localStorage.getItem('rememberMe'));
     if (rememberedData) {
       setFormData(rememberedData);
@@ -73,10 +86,10 @@ function Login() {
             <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handleChange} /> Remember me
           </label>
           {error && <p className="error">{error}</p>}
-          <button type="submit" className="login-button">Login</button> {/* Changed to unique class name */}
+          <button type="submit" className="login-button">Login</button>
         </form>
         <div className="login-links">
-          <a href="/register" className="register-link">New User? Register</a> {/* Changed route to /register */}
+          <a href="/register" className="register-link">New User? Register</a>
         </div>
       </div>
     </div>

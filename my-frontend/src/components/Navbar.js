@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
@@ -18,11 +17,18 @@ function Navbar() {
     }
   };
 
+  const handleRedirectHome = () => {
+    navigate('/'); // Redirect to the home page
+  };
+
   return (
     <nav className="navbar">
       <ul className="navbar-menu">
         <li>
-          <Link to="/"><img src={logo} alt="Uzhavan Logo" className="logo" /></Link>
+          <Link to="/" className="logo-link">
+            <img src={logo} alt="Uzhavan Logo" className="logo" />
+            <span className="logo-text" onClick={handleRedirectHome}>உழவன்</span>
+          </Link>
         </li>
         <li><Link to="/register" className="nav-links button-link">Register</Link></li>
         <li><Link to="/login" className="nav-links button-link">Login</Link></li>
