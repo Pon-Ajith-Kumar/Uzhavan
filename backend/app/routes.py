@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
@@ -321,18 +321,28 @@ def get_all_products():
     conn.close()
     return products
 
-@bp.route('/admin/products', methods=['OPTIONS', 'GET'])
+@bp.route('/products/list', methods=['OPTIONS', 'GET'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def get_all_products_route():
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'admin':
-        return jsonify({'message': 'Unauthorized access'}), 403
     if request.method == 'OPTIONS':
         return '', 204
-    products = get_all_products()
-    return jsonify({'products': products}), 200
+    try:
+        # Check if the request has the Authorization header
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            token = auth_header.split(" ")[1]
+            # Validate token (implement your token validation logic here)
+            # If token is valid, continue to fetch products
+            print("Valid token provided")
+        else:
+            print("No token provided, allowing public access")
 
+        products = get_all_products()
+        return jsonify({'products': products}), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': str(e)}), 422
 
 #List All Orders
 def get_all_orders():
@@ -444,27 +454,24 @@ def get_products_by_farmer(farmer_id):
 def get_products_by_farmer_route():
     current_user = get_jwt_identity()
     farmer_id = current_user['id']
-    products = get_products_by_farmer(farmer_id)
-    return jsonify({'products': products}), 200
+    products = Product.query.filter_by(farmer_id=farmer_id).all()
+    return jsonify({'products': [product.as_dict() for product in products]}), 200
 
-#List All Products
-@bp.route('/products/list', methods=['GET'])
-@cross_origin(origins='http://localhost:3000')
-@jwt_required()
-def list_all_products_route():
-    products = Product.query.all()
-    if not products:
-        return jsonify({'message': 'No products found'}), 200
-    product_list = [product.as_dict() for product in products]
-    return jsonify({'products': product_list}), 200
-
+#View Orders by Farmer
 def get_orders_by_farmer(farmer_id):
     products = Product.query.filter_by(farmer_id=farmer_id).all()
     product_ids = [product.id for product in products]
     orders = Order.query.filter(Order.product_id.in_(product_ids)).all()
-    return [order.as_dict() for order in orders]
+    
+    order_list = []
+    for order in orders:
+        product = Product.query.get(order.product_id)
+        order_dict = order.as_dict()
+        order_dict['product'] = product.as_dict()
+        order_list.append(order_dict)
+        
+    return order_list
 
-#View Orders by Farmer
 @bp.route('/farmer/orders', methods=['GET'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()

@@ -61,14 +61,31 @@ body, html {
 }
 
 .btn-primary {
-    background-color: #4CAF50; /* Green color for both buttons */
+    background-color: #4CAF50; /* Green color for Register button */
     color: white;
 }
 
 .btn-secondary {
-    background-color: #4CAF50; /* Green color for the Login button */
+    background-color: #4CAF50; /* Green color for Login button */
     color: white;
     border: 1px solid #4CAF50;
+}
+
+.btn-store {
+    background-color: #4CAF50; /* Match Login button color */
+    color: white;
+    border: 1px solid #4CAF50; /* Match Login button border */
+    font-size: 1.5em; /* Match text size with other buttons */
+    padding: 15px 30px; /* Match padding with other buttons */
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold; /* Make button text bold */
+    transition: background 0.3s, transform 0.3s; /* Add smooth transition for hover effects */
+}
+
+.btn-store:hover {
+    background-color: #45a049; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
 }
 
 .features, .testimonials {

@@ -2,20 +2,25 @@
   background: #4CAF50;
   height: 50px; /* Reduced height */
   display: flex;
-  justify-content: center;
   align-items: center;
   font-size: 1.2rem;
   padding: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
 }
 
 .navbar-menu {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 1500px;
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: auto; /* Push other items to the right */
 }
 
 .logo-link {
@@ -44,62 +49,4 @@
 
 .logo-text:hover {
   text-shadow: 0 0 5px white; /* Slight glow effect on hover */
-}
-
-.nav-links {
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.nav-links:hover {
-  border-bottom: 4px solid #fff;
-}
-
-.button-link {
-  background: #4CAF50; /* Match navbar green background color */
-  color: #fff; /* White text color */
-  border: none;
-  padding: 8px 16px;
-  margin-left: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none; /* Remove underline */
-  font-weight: bold; /* Bold text */
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center align text in button */
-  margin-right: 10px; /* Add spacing between buttons */
-}
-
-.button-link:hover {
-  background: #45a049; /* Slightly darker green on hover */
-}
-
-.navbar-menu li:nth-child(2) {
-  margin-left: auto; /* Move Register to the left of Login */
-}
-
-.signout-button {
-  font-size: 1.2rem; /* Increase the font size specifically for the Sign Out button */
-  background: #4CAF50; /* Match green background color */
-  border: 2px solid #fff; /* Add a white border */
-  padding: 8px 16px;
-  margin-left: 10px;
-  margin-right: 10px; /* Add spacing between buttons */
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none; /* Remove underline */
-  font-weight: bold; /* Bold text */
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center align text in button */
-}
-
-.signout-button:hover {
-  background: #45a049; /* Slightly darker green on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow effect on hover */
 }

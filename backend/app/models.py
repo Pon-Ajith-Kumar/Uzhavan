@@ -76,13 +76,16 @@ class Order(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(20), nullable=False, default='pending')
 
+    product = db.relationship('Product', backref=db.backref('orders', lazy=True))
+
     def as_dict(self):
         return {
             'id': self.id,
             'product_id': self.product_id,
             'customer_id': self.customer_id,
             'quantity': self.quantity,
-            'status': self.status
+            'status': self.status,
+            'product': self.product.as_dict() if self.product else None
         }
 
     def __repr__(self):

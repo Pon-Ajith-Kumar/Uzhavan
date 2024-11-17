@@ -7,9 +7,14 @@ function ProductList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/admin/products', {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          throw new Error("No access token found");
+        }
+
+        const response = await axios.get('http://localhost:5000/products/list', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           withCredentials: true
@@ -25,11 +30,15 @@ function ProductList() {
   return (
     <div>
       <h2>Products List</h2>
-      <ul>
-        {products.map(product => (
-          <li key={product.id}>{product.name} - {product.price}</li>
-        ))}
-      </ul>
+      {products.length > 0 ? (
+        <ul>
+          {products.map(product => (
+            <li key={product.id}>{product.name} - {product.price}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No products found.</p>
+      )}
     </div>
   );
 }

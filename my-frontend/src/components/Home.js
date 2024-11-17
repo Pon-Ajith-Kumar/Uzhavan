@@ -1,4 +1,3 @@
-// src/components/Home.js
 import React from 'react';
 import './Home.css';
 import heroImage from '../assets/images/hero.jpg';
@@ -18,6 +17,7 @@ function Home() {
             <div className="hero-buttons">
               <button className="btn btn-primary" onClick={() => window.location.href = '/register'}>Register</button>
               <button className="btn btn-secondary" onClick={() => window.location.href = '/login'}>Login</button>
+              <button className="btn btn-store" onClick={() => window.location.href = '/products'}>Uzhavan Store</button> {/* Add Uzhavan Store button */}
             </div>
           </div>
         </div>
