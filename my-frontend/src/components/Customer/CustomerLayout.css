@@ -13,7 +13,7 @@
     flex-grow: 1;
     padding: 20px;
     padding-top: 80px; /* Add padding at the top */
-    margin-left: 200px; /* Add margin to the left to avoid being hidden by the vertical navbar */
+    margin-left: 220px; /* Add margin to the left to avoid being hidden by the vertical navbar */
     background-color: #f9f9f9;
   }
   
@@ -22,13 +22,12 @@
     background-color: #4CAF50; /* Main green color */
     color: white;
     padding: 20px;
-    padding-top: 60px; /* Add padding at the top to avoid being hidden by the top navbar */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
     position: fixed;
     top: 60px; /* Align under the top navbar */
     left: 0;
     height: calc(100vh - 60px); /* Adjust height to account for the top navbar */
+    box-sizing: border-box;
   }
   
   .customer-vertical-nav ul {

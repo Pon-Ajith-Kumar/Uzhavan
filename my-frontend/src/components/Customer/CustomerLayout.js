@@ -1,17 +1,15 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import CustomerNavbar from './CustomerNavbar'; // Import the new CustomerNavbar
-import CustomerVerticalNavbar from './CustomerVerticalNavbar'; // Import the vertical CustomerNavbar
-import './CustomerLayout.css'; // Ensure you have this CSS file for styling
+import CustomerNavbar from './CustomerNavbar'; 
+import CustomerVerticalNavbar from './CustomerVerticalNavbar'; 
+import './CustomerLayout.css'; 
 
 function CustomerLayout() {
-  const customerName = localStorage.getItem('username'); // Retrieve username from local storage
-
   return (
     <div className="customer-container">
-      <CustomerNavbar customerName={customerName} />
+      <CustomerNavbar />
       <div className="main-layout">
-        <CustomerVerticalNavbar /> {/* Vertical Navbar */}
+        <CustomerVerticalNavbar />
         <main className="customer-content">
           <Outlet />
         </main>
