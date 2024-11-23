@@ -14,6 +14,7 @@ function ViewBillingReports() {
           },
           withCredentials: true
         });
+        console.log('Fetched reports:', response.data); // Log the fetched reports
         setReports(response.data);
       } catch (error) {
         console.error('Error fetching billing reports:', error);
@@ -26,9 +27,15 @@ function ViewBillingReports() {
     <div>
       <h2>Billing Reports List</h2>
       <ul>
-        {reports.map(report => (
-          <li key={report.id}>{report.details}</li>
-        ))}
+        {reports.length > 0 ? (
+          reports.map(report => (
+            <li key={report.id}>
+              {report.details ? report.details : 'No details available'}
+            </li>
+          ))
+        ) : (
+          <li>No billing reports found.</li>
+        )}
       </ul>
     </div>
   );

@@ -15,7 +15,7 @@ class User(db.Model):
     address = db.Column(db.String(200), nullable=True)
     pincode = db.Column(db.String(10), nullable=True)
     account_no = db.Column(db.String(20), nullable=True)
-    account_holder_name = db.Column(db.String(100), nullable=True) # Add this line
+    account_holder_name = db.Column(db.String(100), nullable=True)
     bank_name = db.Column(db.String(100), nullable=True)
     branch_name = db.Column(db.String(100), nullable=True)
     ifsc_code = db.Column(db.String(20), nullable=True)
@@ -34,11 +34,11 @@ class User(db.Model):
             'address': self.address,
             'pincode': self.pincode,
             'account_no': self.account_no,
-            'account_holder_name': self.account_holder_name, # Add this field
+            'account_holder_name': self.account_holder_name,
             'bank_name': self.bank_name,
             'branch_name': self.branch_name,
             'ifsc_code': self.ifsc_code,
-            'role': self.role  # Assuming role is an Enum type
+            'role': self.role
         }
 
 class Product(db.Model):
@@ -60,12 +60,13 @@ class Product(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'price': self.price,
             'description': self.description,
+            'price': self.price,
+            'available': self.available,
+            'farmer_id': self.farmer_id,
             'num_available': self.num_available,
             'quantity_available': self.quantity_available,
-            'unit': self.unit,
-            'farmer_id': self.farmer_id
+            'unit': self.unit
         }
 
 class Order(db.Model):
@@ -121,6 +122,7 @@ class BillingReport(db.Model):
     product_name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float, nullable=False)
     customer_name = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.String, nullable=True)  # Add details field
 
     def __repr__(self):
         return f'<BillingReport {self.id}>'
@@ -132,5 +134,6 @@ class BillingReport(db.Model):
             'status': self.status,
             'product_name': self.product_name,
             'price': self.price,
-            'customer_name': self.customer_name
-        }    
+            'customer_name': self.customer_name,
+            'details': self.details  # Ensure details field is included
+        }

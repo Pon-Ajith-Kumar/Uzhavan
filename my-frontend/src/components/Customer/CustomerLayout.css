@@ -13,7 +13,7 @@
     flex-grow: 1;
     padding: 20px;
     padding-top: 80px; /* Add padding at the top */
-    margin-left: 220px; /* Add margin to the left to avoid being hidden by the vertical navbar */
+    margin-left: 200px; /* Add margin to the left to avoid being hidden by the vertical navbar */
     background-color: #f9f9f9;
   }
   

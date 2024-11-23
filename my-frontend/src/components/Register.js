@@ -21,6 +21,7 @@ function Register() {
     address: '',
     pincode: '',
     account_no: '',
+    account_holder_name: '', // Add this field
     bank_name: '',
     branch_name: '',
     ifsc_code: '',
@@ -183,6 +184,10 @@ function Register() {
               <label>
                 <b>Account Number</b>
                 <input type="text" name="account_no" placeholder="Account Number" value={formData.account_no} onChange={handleChange} required />
+              </label>
+              <label>
+                <b>Account Holder Name</b> {/* New field */}
+                <input type="text" name="account_holder_name" placeholder="Account Holder Name" value={formData.account_holder_name} onChange={handleChange} required />
               </label>
               <label>
                 <b>Bank Name</b>

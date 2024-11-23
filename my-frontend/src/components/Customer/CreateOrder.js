@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './CustomerLayout.css'; // Ensure correct path
 
 function CreateOrder() {
   const [productId, setProductId] = useState('');
-  const [quantity, setQuantity] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('access_token');
+      if (!token) {
+        toast.error('Authorization token is missing. Please log in again.');
+        return;
+      }
       await axios.post('http://localhost:5000/create_order', {
-        product_id: productId,
-        quantity: quantity
+        product_id: productId
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Order created successfully!');
+      toast.success('Order created successfully!');
     } catch (error) {
       console.error('Error creating order:', error);
-      alert('Error creating order');
+      toast.error(`Error creating order: ${error.response?.data?.message || 'Internal Server Error'}`);
     }
   };
 
@@ -34,15 +38,9 @@ function CreateOrder() {
           onChange={(e) => setProductId(e.target.value)}
           required
         />
-        <label>Quantity:</label>
-        <input
-          type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          required
-        />
         <button type="submit">Create Order</button>
       </form>
+      <ToastContainer />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app,make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
 from flask_cors import CORS, cross_origin
@@ -133,65 +133,116 @@ def logout():
     return response, 200
 
 # Profile and Password Management Routes
-#View Profile
-@bp.route('/profile', methods=['GET'])
-@cross_origin(origins='http://localhost:3000')
+# Helper function to build CORS preflight response
+def build_cors_preflight_response():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
+def cors_actual_response(response):
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
+# View Profile
+@bp.route('/profile', methods=['OPTIONS', 'GET'])
+@cross_origin(origins='http://localhost:3000', support_credentials=True)
 @jwt_required()
 def view_profile():
-    current_user = get_jwt_identity()
-    user = User.query.get(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-    return jsonify(user.as_dict())
+    if request.method == 'OPTIONS':
+        return build_cors_preflight_response()
+    else:
+        current_user = get_jwt_identity()
+        user = User.query.get(current_user['id'])
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'contact': user.contact,
+            'country': user.country,
+            'state': user.state,
+            'district': user.district,
+            'taluk': user.taluk,
+            'address': user.address,
+            'pincode': user.pincode,
+            'account_no': user.account_no,
+            'account_holder_name': user.account_holder_name,
+            'bank_name': user.bank_name,
+            'branch_name': user.branch_name,
+            'ifsc_code': user.ifsc_code,
+            'role': user.role
+        }
+        response = jsonify(user_data)
+        return cors_actual_response(response)
 
-#Update Profile 
-@bp.route('/profile', methods=['PUT'])
+# Update Profile
+@bp.route('/profile', methods=['PUT', 'OPTIONS'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def update_profile():
-    current_user = get_jwt_identity()
-    data = request.get_json()
-    user = User.query.get(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
+    if request.method == 'OPTIONS':
+        return build_cors_preflight_response()
+    else:
+        current_user = get_jwt_identity()
+        data = request.get_json()
+        user = User.query.get(current_user['id'])
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
 
-    user.username = data.get('username', user.username)
-    user.contact = data.get('contact', user.contact)
-    user.country = data.get('country', user.country)
-    user.state = data.get('state', user.state)
-    user.district = data.get('district', user.district)
-    user.taluk = data.get('taluk', user.taluk)
-    user.address = data.get('address', user.address)
-    user.pincode = data.get('pincode', user.pincode)
-    user.bank_name = data.get('bank_name', user.bank_name)
-    user.branch_name = data.get('branch_name', user.branch_name)
-    user.account_holder_name = data.get('account_holder_name', user.account_holder_name)
-    user.ifsc_code = data.get('ifsc_code', user.ifsc_code)
-    db.session.commit()
-    return jsonify({'message': 'Profile updated successfully'})
+        user.username = data.get('username', user.username)
+        user.contact = data.get('contact', user.contact)
+        user.country = data.get('country', user.country)
+        user.state = data.get('state', user.state)
+        user.district = data.get('district', user.district)
+        user.taluk = data.get('taluk', user.taluk)
+        user.address = data.get('address', user.address)
+        user.pincode = data.get('pincode', user.pincode)
+        user.bank_name = data.get('bank_name', user.bank_name)
+        user.branch_name = data.get('branch_name', user.branch_name)
+        user.account_holder_name = data.get('account_holder_name', user.account_holder_name)
+        user.ifsc_code = data.get('ifsc_code', user.ifsc_code)
+        db.session.commit()
+        return jsonify({'message': 'Profile updated successfully'})
 
-#Change Password
-@bp.route('/change_password', methods=['PUT'])
-@cross_origin(origins='http://localhost:3000')
+# Change Password
+@bp.route('/change_password', methods=['OPTIONS', 'PUT'])
+@cross_origin(origins='http://localhost:3000', support_credentials=True)
 @jwt_required()
 def change_password():
-    current_user = get_jwt_identity()
-    data = request.get_json()
+    if request.method == 'OPTIONS':
+        return build_cors_preflight_response()
+    try:
+        current_user = get_jwt_identity()
+        data = request.get_json()
+        print(f"Received data: {data}")
 
-    user = User.query.get(current_user['id'])
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
+        user = User.query.get(current_user['id'])
+        if not user:
+            print("User not found")
+            return jsonify({'message': 'User not found'}), 404
 
-    old_password = data.get('old_password')
-    new_password = data.get('new_password')
+        old_password = data.get('oldPassword')
+        new_password = data.get('newPassword')
 
-    if not check_password_hash(user.password, old_password):
-        return jsonify({'message': 'Old password is incorrect'}), 400
+        print(f"User found: {user.username}, old_password: {old_password}, new_password: {new_password}")
 
-    user.password = generate_password_hash(new_password)
-    db.session.commit()
+        if not check_password_hash(user.password, old_password):
+            print("Old password is incorrect")
+            return jsonify({'message': 'Old password is incorrect'}), 400
 
-    return jsonify({'message': 'Password changed successfully'})
+        user.password = generate_password_hash(new_password)
+        db.session.commit()
+        print("Password changed successfully")
+        response = jsonify({'message': 'Password changed successfully'})
+        return cors_actual_response(response)
+    except Exception as e:
+        print(f"Error during change_password: {e}")
+        return jsonify({'message': 'Internal Server Error'}), 500
 
 
 # Admin Routes
@@ -391,11 +442,11 @@ def purchase_requests():
     requests = get_purchase_requests()
     return jsonify(requests), 200
 
-#List All Billing Reports
 def get_billing_report():
     report = BillingReport.query.all()
     return [r.as_dict() for r in report]
 
+# Fetch Billing Reports
 @bp.route('/admin/billing_report', methods=['GET'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
@@ -404,6 +455,7 @@ def billing_report():
     if current_user['role'] != 'admin':
         return jsonify({'message': 'Unauthorized access'}), 403
     report = get_billing_report()
+    print('Fetched billing reports:', report)  # Log the fetched reports
     return jsonify(report), 200
 
 
@@ -808,55 +860,80 @@ def deliver_order_route():
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def create_order_route():
-    data = request.get_json()
-    current_user = get_jwt_identity()
-    customer_id = int(current_user['id'])
-    product_id = data.get('product_id')
-    quantity = data.get('quantity')
+    try:
+        data = request.get_json()
+        current_user = get_jwt_identity()
+        customer_id = int(current_user['id'])
+        product_id = data.get('product_id')
 
-    # Fetch product and customer details
-    product = Product.query.get(product_id)
-    customer = User.query.get(customer_id)
+        print(f"Received order data: product_id={product_id}, customer_id={customer_id}")
 
-    if not product:
-        return jsonify({'message': 'Product not found'}), 404
+        # Validate input
+        if not product_id:
+            print("Validation failed: Product ID is required")
+            return jsonify({'message': 'Product ID is required'}), 400
+        try:
+            product_id = int(product_id)
+        except ValueError:
+            print("Validation failed: Product ID must be an integer")
+            return jsonify({'message': 'Product ID must be an integer'}), 400
 
-    if product.num_available is not None:
-        if quantity > product.num_available:
-            return jsonify({'message': 'Quantity ordered exceeds number of products available'}), 400
-    elif product.quantity_available is not None:
-        if quantity > product.quantity_available:
-            return jsonify({'message': 'Quantity ordered exceeds quantity of products available'}), 400
+        # Fetch product and customer details
+        product = Product.query.get(product_id)
+        customer = User.query.get(customer_id)
 
-    new_order = Order(
-        product_id=product_id,
-        customer_id=customer_id,
-        quantity=quantity,
-        status='pending'
-    )
-    db.session.add(new_order)
-    db.session.commit()
+        if not product:
+            print(f"Product not found: product_id={product_id}")
+            return jsonify({'message': 'Product not found'}), 404
 
-    # Create corresponding entries in purchase_requests and billing_reports
-    new_purchase_request = PurchaseRequest(
-        order_id=new_order.id,
-        status='pending',
-        product_name=product.name,
-        price=product.price,
-        customer_name=customer.username
-    )
-    new_billing_report = BillingReport(
-        order_id=new_order.id,
-        status='pending',
-        product_name=product.name,
-        price=product.price,
-        customer_name=customer.username
-    )
-    db.session.add(new_purchase_request)
-    db.session.add(new_billing_report)
-    db.session.commit()
+        # Determine the available quantity
+        quantity = 0
+        if product.num_available is not None:
+            quantity = product.num_available
+        elif product.quantity_available is not None:
+            quantity = product.quantity_available
 
-    return jsonify({'id': new_order.id, 'message': 'Order created successfully'}), 201
+        # Check if the quantity is sufficient
+        if quantity <= 0:
+            print(f"Insufficient quantity available: quantity={quantity}")
+            return jsonify({'message': 'Insufficient quantity available'}), 400
+
+        new_order = Order(
+            product_id=product_id,
+            customer_id=customer_id,
+            quantity=quantity,
+            status='pending'
+        )
+        db.session.add(new_order)
+        db.session.commit()
+
+        print(f"Order created: order_id={new_order.id}")
+
+        # Create corresponding entries in purchase_requests and billing_reports
+        new_purchase_request = PurchaseRequest(
+            order_id=new_order.id,
+            status='pending',
+            product_name=product.name,
+            price=product.price,
+            customer_name=customer.username
+        )
+        new_billing_report = BillingReport(
+            order_id=new_order.id,
+            status='pending',
+            product_name=product.name,
+            price=product.price,
+            customer_name=customer.username
+        )
+        db.session.add(new_purchase_request)
+        db.session.add(new_billing_report)
+        db.session.commit()
+
+        print("Purchase request and billing report created successfully")
+
+        return jsonify({'id': new_order.id, 'message': 'Order created successfully'}), 201
+    except Exception as e:
+        print(f"Error creating order: {e}")
+        return jsonify({'message': 'Internal Server Error'}), 500
 
 #View Order Status
 def get_order_by_id(order_id):

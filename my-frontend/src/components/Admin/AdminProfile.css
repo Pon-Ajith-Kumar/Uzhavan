@@ -1,0 +1,95 @@
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main-layout {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .admin-vertical-nav {
+    width: 220px; /* Adjust width as needed */
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .admin-vertical-nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .admin-vertical-nav li {
+    margin-bottom: 15px;
+  }
+  
+  .admin-vertical-nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1.1rem; /* Adjust font size as needed */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .admin-vertical-nav a:hover {
+    background-color: #45a049;
+  }
+  
+  .admin-content {
+    flex-grow: 1;
+    padding: 20px;
+    padding-left: 240px; /* Adjust padding as needed to make space for navbar */
+  }
+  
+  .view-profile {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .view-profile h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+  
+  .view-profile label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .view-profile input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .view-profile button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .view-profile button:hover {
+    background-color: #45a049;
+  }
+  

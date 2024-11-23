@@ -6,6 +6,7 @@ function AdminVerticalNavbar() {
   return (
     <nav className="admin-vertical-nav">
       <ul>
+        <li><Link to="/admin/profile">View Profile</Link></li> {/* Add View Profile option */}
         <li><Link to="/admin/users">View Users</Link></li>
         <li><Link to="/admin/products">View Products</Link></li>
         <li><Link to="/admin/orders">View Orders</Link></li>

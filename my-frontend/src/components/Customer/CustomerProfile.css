@@ -1,0 +1,41 @@
+.view-profile {
+    padding: 20px;
+  }
+  
+  .view-profile h2 {
+    color: #333;
+  }
+  
+  .view-profile p {
+    margin: 10px 0;
+  }
+  
+  .view-profile input {
+    display: block;
+    margin: 10px 0;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .view-profile button {
+    margin: 10px 5px 0 0;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .view-profile button:hover {
+    background-color: #218838;
+  }
+  
+  .view-profile .cancel-button {
+    background-color: #dc3545;
+  }
+  
+  .view-profile .cancel-button:hover {
+    background-color: #c82333;
+  }
+  

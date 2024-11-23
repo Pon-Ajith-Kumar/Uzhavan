@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify, request, make_response  # Ensure Flask is imported
+from flask import Flask, Blueprint, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager

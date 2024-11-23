@@ -6,6 +6,7 @@ function CustomerVerticalNavbar() {
   return (
     <nav className="customer-vertical-nav">
       <ul>
+        <li><Link to="/customer/profile">View Profile</Link></li>
         <li><Link to="/customer/create-order">Create Order</Link></li>
         <li><Link to="/customer/view-orders">View Orders</Link></li>
         <li><Link to="/customer/view-purchase-requests">View Purchase Requests</Link></li>
