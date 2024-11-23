@@ -8,22 +8,28 @@ function ProductList() {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        if (!token) {
-          throw new Error("No access token found");
+        let headers = {
+          'Content-Type': 'application/json'
+        };
+
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+          console.log('Authorization header set:', headers.Authorization);
+        } else {
+          console.log('No Authorization header set');
         }
 
         const response = await axios.get('http://localhost:5000/products/list', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
+          headers: headers,
           withCredentials: true
         });
+
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
+
     fetchProducts();
   }, []);
 

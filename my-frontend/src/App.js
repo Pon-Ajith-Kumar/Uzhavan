@@ -16,6 +16,14 @@ import FarmerProductList from './components/Farmer/FarmerProductList';
 import FarmerOrders from './components/Farmer/FarmerOrders';
 import GeneralProductList from './components/Admin/ProductList'; // General product list for Uzhavan Store
 
+import CustomerLayout from './components/Customer/CustomerLayout'; // Import the customer layout
+import CreateOrder from './components/Customer/CreateOrder';
+import ViewOrdersCustomer from './components/Customer/ViewOrdersCustomer';
+import ViewPurchaseRequestsCustomer from './components/Customer/ViewPurchaseRequestsCustomer';
+import ViewBillingReportsCustomer from './components/Customer/ViewBillingReportsCustomer';
+import TrackOrderStatus from './components/Customer/TrackOrderStatus';
+import CancelOrder from './components/Customer/CancelOrder';
+
 function App() {
   return (
     <Router>
@@ -24,6 +32,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<GeneralProductList />} /> {/* General product list for Uzhavan Store */}
+        
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="users" element={<ViewUsers />} />
@@ -33,11 +42,22 @@ function App() {
           <Route path="purchase-requests" element={<ViewPurchaseRequests />} />
           <Route path="billing-report" element={<ViewBillingReports />} />
         </Route>
+        
         {/* Farmer Routes */}
         <Route path="/farmer" element={<FarmerLayout />}>
           <Route path="create_product" element={<CreateProduct />} />
           <Route path="products" element={<FarmerProductList />} />
           <Route path="orders" element={<FarmerOrders />} />
+        </Route>
+
+        {/* Customer Routes */}
+        <Route path="/customer" element={<CustomerLayout />}>
+          <Route path="create-order" element={<CreateOrder />} />
+          <Route path="view-orders" element={<ViewOrdersCustomer />} />
+          <Route path="view-purchase-requests" element={<ViewPurchaseRequestsCustomer />} />
+          <Route path="view-billing-reports" element={<ViewBillingReportsCustomer />} />
+          <Route path="track-order-status" element={<TrackOrderStatus />} />
+          <Route path="cancel-order" element={<CancelOrder />} />
         </Route>
       </Routes>
     </Router>

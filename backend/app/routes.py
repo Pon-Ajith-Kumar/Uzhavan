@@ -1,10 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
 from flask_cors import CORS, cross_origin
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
+import jwt
 
 bp = Blueprint('main', __name__)
 
@@ -323,22 +324,33 @@ def get_all_products():
 
 @bp.route('/products/list', methods=['OPTIONS', 'GET'])
 @cross_origin(origins='http://localhost:3000')
-@jwt_required()
 def get_all_products_route():
     if request.method == 'OPTIONS':
-        return '', 204
+        response = jsonify({'message': 'Preflight request handled'})
+        response.status_code = 204
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'GET,OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        return response
+
     try:
-        # Check if the request has the Authorization header
         auth_header = request.headers.get('Authorization')
         if auth_header:
             token = auth_header.split(" ")[1]
-            # Validate token (implement your token validation logic here)
-            # If token is valid, continue to fetch products
-            print("Valid token provided")
+            try:
+                jwt.decode(token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+                print("Valid token provided")
+            except jwt.ExpiredSignatureError:
+                return jsonify({'message': 'Token has expired!'}), 401
+            except jwt.InvalidTokenError:
+                return jsonify({'message': 'Invalid token!'}), 403
         else:
             print("No token provided, allowing public access")
 
+        print("Fetching products from database...")
         products = get_all_products()
+        print(f"Products fetched: {products}")
+
         return jsonify({'products': products}), 200
     except Exception as e:
         print("Error:", e)
@@ -404,44 +416,66 @@ def update_related_status(order_id, new_status):
 
 
 # Farmer/Seller Routes
-@bp.route('/create_product', methods=['POST'])
+@bp.route('/create_product', methods=['OPTIONS', 'POST'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def create_product_route():
-    data = request.get_json()
-    current_user = get_jwt_identity()
-    farmer_id = current_user['id']
-    name = data.get('name')
-    price = data.get('price')
-    description = data.get('description')
-    num_available = data.get('num_available')
-    quantity_available = data.get('quantity_available')
-    unit = data.get('unit')
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request handled'})
+        response.status_code = 204
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'POST,OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        return response
 
-    if not num_available and not quantity_available:
-        return jsonify({'message': 'You must provide either the number of products available or the quantity of products available.'}), 400
+    try:
+        data = request.get_json()
+        print("Received data:", data)
 
-    if num_available is not None and unit is not None:
-        return jsonify({'message': 'Unit for no. of products available is not accepted.'}), 400
+        current_user = get_jwt_identity()
+        farmer_id = current_user['id']
+        name = data.get('name')
+        price = data.get('price')
+        description = data.get('description')
+        num_available = data.get('num_available') or None  # Handle empty string as None
+        quantity_available = data.get('quantity_available') or None  # Handle empty string as None
+        unit = data.get('unit')
 
-    if quantity_available is not None and unit is None:
-        return jsonify({'message': 'Unit must be provided if quantity available is specified.'}), 400
-    
-    if quantity_available is None:
-        unit = None
+        # Additional validations
+        if not name:
+            return jsonify({'message': 'Product name is required'}), 400
+        if not price:
+            return jsonify({'message': 'Product price is required'}), 400
+        if not description:
+            return jsonify({'message': 'Product description is required'}), 400
 
-    new_product = Product(
-        name=name,
-        price=price,
-        description=description,
-        farmer_id=farmer_id,
-        num_available=num_available,
-        quantity_available=quantity_available,
-        unit=unit
-    )
-    db.session.add(new_product)
-    db.session.commit()
-    return jsonify({'id': new_product.id, 'message': 'Product created successfully'}), 201
+        if not num_available and not quantity_available:
+            return jsonify({'message': 'You must provide either the number of products available or the quantity of products available.'}), 400
+
+        if num_available is not None and unit:
+            return jsonify({'message': 'Unit for no. of products available is not accepted.'}), 400
+
+        if quantity_available is not None and not unit:
+            return jsonify({'message': 'Unit must be provided if quantity available is specified.'}), 400
+        
+        if quantity_available is None:
+            unit = None
+
+        new_product = Product(
+            name=name,
+            price=price,
+            description=description,
+            farmer_id=farmer_id,
+            num_available=num_available,
+            quantity_available=quantity_available,
+            unit=unit
+        )
+        db.session.add(new_product)
+        db.session.commit()
+        return jsonify({'id': new_product.id, 'message': 'Product created successfully'}), 201
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': str(e)}), 422
 
 #View Products by Farmer
 def get_products_by_farmer(farmer_id):

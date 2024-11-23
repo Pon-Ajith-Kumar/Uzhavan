@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify, request, make_response
+from flask import Flask, Blueprint, jsonify, request, make_response  # Ensure Flask is imported
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -8,6 +8,27 @@ from .models import User, Product, Order, PurchaseRequest, BillingReport
 from .routes import bp as main_bp
 import os
 from dotenv import load_dotenv
+from functools import wraps
+import jwt
+
+# Custom decorator for routes that need JWT authentication
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
+        
+        try:
+            # Decode the token (use appropriate algorithm)
+            jwt.decode(token.split(" ")[1], app.config['SECRET_KEY'], algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired!'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Invalid token!'}), 403
+        
+        return f(*args, **kwargs)
+    return decorated_function
 
 def create_app():
     app = Flask(__name__)
@@ -39,6 +60,7 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    # Register blueprint without the URL prefix
     app.register_blueprint(main_bp)
 
     return app

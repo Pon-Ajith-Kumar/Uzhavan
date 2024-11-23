@@ -5,6 +5,7 @@ import { Country, State, City } from 'country-state-city';
 import Navbar from './Navbar'; // Import your Navbar component
 import './Register.css';
 import registerImage from '../assets/images/register-image.jpg'; // Ensure this image path is correct
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -27,7 +28,9 @@ function Register() {
 
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  const [showLoginButton, setShowLoginButton] = useState(false); // New state for login button visibility
   const messageRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,6 +65,7 @@ function Register() {
       const response = await axios.post('http://localhost:5000/register', formData);
       setMessage(`UZHAVAN SAYS\n${response.data.message}`);
       setShowMessage(true);
+      setShowLoginButton(true); // Show the login button on successful registration
       setTimeout(() => setShowMessage(false), 5000); // Hide the message after 5 seconds
       if (messageRef.current) {
         messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -196,6 +200,11 @@ function Register() {
             
             <button type="submit">Register</button>
           </form>
+          {showLoginButton && (
+            <button className="login-button" onClick={() => navigate('/login')}>
+              Login
+            </button>
+          )}
         </div>
       </div>
     </>

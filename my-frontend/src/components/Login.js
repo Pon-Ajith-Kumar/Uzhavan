@@ -45,7 +45,7 @@ function Login() {
       } else if (userRole === 'farmer') {
         navigate('/farmer');
       } else if (userRole === 'customer') {
-        navigate('/customer');
+        navigate('/customer'); // Redirect customers to the customer dashboard
       }
     } catch (error) {
       setError('Invalid Credentials');
