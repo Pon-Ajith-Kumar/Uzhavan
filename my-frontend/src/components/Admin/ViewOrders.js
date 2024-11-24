@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './ViewOrders.css'; // Ensure you have the CSS file for styling
 
 function ViewOrders() {
   const [orders, setOrders] = useState([]);
@@ -23,16 +24,24 @@ function ViewOrders() {
   }, []);
 
   return (
-    <div>
+    <div className="orders-container">
       <h2>Orders List</h2>
-      <ul>
-        {orders.map(order => (
-          <li key={order.id}>{order.product_name} - {order.quantity}</li>
-        ))}
-      </ul>
+      <div className="order-grid">
+        {orders.length > 0 ? (
+          orders.map(order => (
+            <div key={order.id} className="order-card">
+              <h3 className="product-name">{order.product_name}</h3>
+              <p><strong>Order ID:</strong> {order.id}</p>
+              <p><strong>Quantity:</strong> {order.quantity}</p>
+              <p><strong>Status:</strong> {order.status}</p>
+            </div>
+          ))
+        ) : (
+          <p>No orders found.</p>
+        )}
+      </div>
     </div>
   );
 }
 
 export default ViewOrders;
-

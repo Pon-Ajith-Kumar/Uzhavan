@@ -431,12 +431,29 @@ def get_all_orders():
 @bp.route('/admin/orders', methods=['GET'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
-def view_all_orders():
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'admin':
-        return jsonify({'message': 'Unauthorized access'}), 403
-    orders = get_all_orders()
-    return jsonify({'orders': orders}), 200
+def get_orders():
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] != 'admin':
+            return jsonify({'message': 'Unauthorized access'}), 403
+        
+        orders = Order.query.all()
+        
+        orders_list = []
+        for order in orders:
+            product = Product.query.get(order.product_id)
+            orders_list.append({
+                'id': order.id,
+                'status': order.status,
+                'product_name': product.name if product else 'N/A'
+            })
+
+        return jsonify({'orders': orders_list})
+
+    except Exception as e:
+        print(f'Error fetching orders: {e}')
+        return jsonify({'message': 'Internal server error'}), 500
+
 
 #List All Purchase Requestsq
 def get_purchase_requests():
@@ -652,20 +669,36 @@ def update_product():
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def delete_product():
-    data = request.get_json()
-    product_id = data.get('id')
-    product = Product.query.get(product_id)
-    current_user = get_jwt_identity()
+    try:
+        data = request.get_json()
+        product_id = data.get('id')
+        current_user = get_jwt_identity()
 
-    if not product:
-        return jsonify({'message': 'Product not found'}), 404
+        # Log incoming data for debugging
+        app.logger.info(f'Received data for deletion: {data}')
 
-    if product.farmer_id != current_user['id']:
-        return jsonify({'message': 'Unauthorized: You can only delete products you created'}), 403
+        if not product_id:
+            app.logger.error('Product ID is required')
+            return jsonify({'message': 'Product ID is required'}), 400
 
-    db.session.delete(product)
-    db.session.commit()
-    return jsonify({'message': 'Product deleted successfully'})
+        product = Product.query.get(product_id)
+
+        if not product:
+            app.logger.error(f'Product {product_id} not found')
+            return jsonify({'message': 'Product not found'}), 404
+
+        if product.farmer_id != current_user['id']:
+            app.logger.error(f'Unauthorized attempt to delete product {product_id} by user {current_user["id"]}')
+            return jsonify({'message': 'Unauthorized: You can only delete products you created'}), 403
+
+        db.session.delete(product)
+        db.session.commit()
+        app.logger.info(f'Product {product_id} deleted successfully')
+        return jsonify({'message': 'Product deleted successfully'})
+
+    except Exception as e:
+        app.logger.error(f'Error deleting product {product_id}: {e}', exc_info=True)
+        return jsonify({'message': 'Internal server error'}), 500
 
 #Accept Order
 def accept_order(order_id):

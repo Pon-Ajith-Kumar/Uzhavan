@@ -33,7 +33,8 @@ function FarmerProductList() {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Response data:', response.data); // Log the response data
-      setProducts(response.data.products);
+      const sortedProducts = response.data.products.sort((a, b) => b.id - a.id); // Sort products in descending order by ID
+      setProducts(sortedProducts);
     } catch (error) {
       setError(error.message || 'Network Error');
       console.error('Error fetching products:', error);
@@ -66,12 +67,13 @@ function FarmerProductList() {
 
   const handleDelete = async () => {
     if (!productToDelete) return;
-
+  
     try {
       const token = localStorage.getItem('access_token');
+      console.log('Deleting product with ID:', productToDelete); // Log the product ID
       await axios.delete('http://localhost:5000/products/delete', {
         headers: { Authorization: `Bearer ${token}` },
-        data: { id: productToDelete }
+        data: { id: productToDelete } // Ensure the correct data is sent
       });
       setProductToDelete(null);
       toast.success('Product deleted successfully!'); // Show success message
@@ -79,9 +81,10 @@ function FarmerProductList() {
     } catch (error) {
       setError(error.message || 'Network Error');
       console.error('Error deleting product:', error);
+      toast.error('Failed to delete product. Please try again.'); // Show error message to the user
     }
   };
-
+        
   const handleChange = (e) => {
     setProductDetails({
       ...productDetails,

@@ -23,7 +23,8 @@ function FarmerOrders() {
         headers: { Authorization: `Bearer ${token}` }
       };
       const response = await axios.get('http://localhost:5000/farmer/orders', config);
-      setOrders(response.data.orders);
+      const sortedOrders = response.data.orders.sort((a, b) => b.id - a.id); // Sort orders in descending order by ID
+      setOrders(sortedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
