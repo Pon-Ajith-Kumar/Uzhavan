@@ -77,37 +77,36 @@ function FarmerProductList() {
     <div className="farmer-product-list">
       <h2>Your Products</h2>
       {error && <p>Error: {error}</p>}
-      {products.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Available</th>
-              <th>Unit</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>{product.description}</td>
-                <td>{product.price}</td>
-                <td>{product.quantity_available || product.num_available}</td>
-                <td>{product.unit || 'N/A'}</td>
-                <td>
-                  <button onClick={() => handleEdit(product)}>Edit</button>
-                  <button onClick={() => handleDelete(product.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No products found.</p>
-      )}
+      <div className="product-grid">
+        {products.length > 0 ? (
+          products.map((product) => (
+            <div key={product.id} className="product-card">
+              <div className="image-container">
+                {product.image_path ? (
+                  <img src={`/images/${product.image_path}`} alt={product.name} />
+                ) : (
+                  <div className="placeholder-image">Image Not Available</div>
+                )}
+              </div>
+              <div className="product-info">
+                <h3 className="product-name">{product.name}</h3>
+                <p><strong>ID:</strong> {product.id}</p>
+                <p><strong>Description:</strong> {product.description}</p>
+                <p><strong>Price:</strong> {product.price}</p>
+                <p><strong>Number Available:</strong> {product.num_available || 0}</p>
+                <p><strong>Quantity Available:</strong> {product.quantity_available || 0}</p>
+                <p><strong>Unit:</strong> {product.unit || 'N/A'}</p>
+                <div className="product-actions">
+                  <button className="edit-button" onClick={() => handleEdit(product)}>Edit</button>
+                  <button className="delete-button" onClick={() => handleDelete(product.id)}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No products found.</p>
+        )}
+      </div>
 
       {editingProduct && (
         <div className="edit-form">
@@ -134,11 +133,18 @@ function FarmerProductList() {
               value={productDetails.price}
               onChange={handleChange}
             />
-            <label>Available:</label>
+            <label>Quantity Available:</label>
             <input
               type="number"
               name="quantity_available"
               value={productDetails.quantity_available}
+              onChange={handleChange}
+            />
+            <label>Number Available:</label>
+            <input
+              type="number"
+              name="num_available"
+              value={productDetails.num_available}
               onChange={handleChange}
             />
             <label>Unit:</label>

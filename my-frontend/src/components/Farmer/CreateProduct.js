@@ -14,6 +14,9 @@ function CreateProduct() {
     unit: ''
   });
 
+  const [productImage, setProductImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
   const handleChange = (e) => {
     setProductDetails({
       ...productDetails,
@@ -21,12 +24,23 @@ function CreateProduct() {
     });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setProductImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const deleteImage = () => {
+    setProductImage(null);
+    setImagePreview(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('access_token');
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`
       }
     };
@@ -40,9 +54,17 @@ function CreateProduct() {
       return;
     }
 
+    const formData = new FormData();
+    for (const key in productDetails) {
+      formData.append(key, productDetails[key]);
+    }
+    if (productImage) {
+      formData.append('image', productImage);
+    }
+
     try {
-      console.log('Sending product details:', JSON.stringify(productDetails));
-      const response = await axios.post('http://localhost:5000/create_product', productDetails, config);
+      console.log('Sending product details:', formData);
+      const response = await axios.post('http://localhost:5000/create_product', formData, config);
       console.log('Product created successfully:', response.data);
       toast.success('Product created successfully!', {
         autoClose: 8000, // Show for 8 seconds
@@ -56,6 +78,8 @@ function CreateProduct() {
         quantity_available: '',
         unit: ''
       });
+      setProductImage(null);
+      setImagePreview(null);
     } catch (error) {
       console.error('Error creating product:', error);
       if (error.response && error.response.data) {
@@ -142,6 +166,24 @@ function CreateProduct() {
           onChange={handleChange}
           disabled={!productDetails.quantity_available}
         />
+        
+        <div className="image-upload" style={{ display: productImage ? 'none' : 'block' }}>
+          <label htmlFor="product-image">Upload Product Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            id="product-image"
+            onChange={handleImageChange}
+          />
+        </div>
+
+        {imagePreview && (
+          <div className="image-upload-preview">
+            <img src={imagePreview} alt="Product Preview" />
+            <span className="delete-icon" onClick={deleteImage}>✖</span>
+          </div>
+        )}
+        
         <button type="submit">Create Product</button>
       </form>
     </div>

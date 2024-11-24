@@ -47,7 +47,7 @@ def create_app():
     jwt = JWTManager(app)
 
     # Enable CORS for all routes with specific origin
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
     @app.after_request
     def after_request(response):

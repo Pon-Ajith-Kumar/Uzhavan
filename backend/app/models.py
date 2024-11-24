@@ -52,6 +52,7 @@ class Product(db.Model):
     num_available = db.Column(db.Integer, nullable=True)
     quantity_available = db.Column(db.Float, nullable=True)
     unit = db.Column(db.String(10), nullable=True)
+    image_path = db.Column(db.String(500), nullable=True)  # Specify length for VARCHAR
 
     def __repr__(self):
         return f"<Product(id={self.id}, name='{self.name}', price={self.price}, description='{self.description}', num_available={self.num_available}, quantity_available={self.quantity_available}, unit='{self.unit}', farmer_id={self.farmer_id})>"
@@ -66,12 +67,13 @@ class Product(db.Model):
             'farmer_id': self.farmer_id,
             'num_available': self.num_available,
             'quantity_available': self.quantity_available,
-            'unit': self.unit
+            'unit': self.unit,
+            'image_path': self.image_path  # Include image_path in as_dict
         }
 
 class Order(db.Model):
     __tablename__ = 'orders'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # Corrected this line
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
@@ -122,7 +124,7 @@ class BillingReport(db.Model):
     product_name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float, nullable=False)
     customer_name = db.Column(db.String(80), nullable=False)
-    details = db.Column(db.String, nullable=True)  # Add details field
+    details = db.Column(db.String(200), nullable=True)  # Add length for VARCHAR
 
     def __repr__(self):
         return f'<BillingReport {self.id}>'

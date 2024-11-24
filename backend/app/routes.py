@@ -1,13 +1,24 @@
 from flask import Blueprint, request, jsonify, current_app,make_response
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, unset_jwt_cookies, get_jwt_identity
 from flask_cors import CORS, cross_origin
 from .models import db, User, Product, Order, PurchaseRequest, BillingReport
 from .db_config import get_db_connection
 import mysql.connector
 import jwt
+import os
 
 bp = Blueprint('main', __name__)
+UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../my-frontend/src/assets/images'))
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+CORS(bp, origins="http://localhost:3000")  # Allow requests from this origin
+
+print("Upload folder path:", UPLOAD_FOLDER)  # Log the path for verification
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # General Routes
 #Home
@@ -481,19 +492,28 @@ def create_product_route():
         return response
 
     try:
-        data = request.get_json()
-        print("Received data:", data)
+        data = request.form
+        image = request.files.get('image')
+        print("Received form data:", data)
+        print("Received image file:", image)
+        
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image_path = os.path.join(UPLOAD_FOLDER, filename)
+            print("Saving image to:", image_path)
+            image.save(image_path)
+        else:
+            image_path = None
 
         current_user = get_jwt_identity()
         farmer_id = current_user['id']
         name = data.get('name')
         price = data.get('price')
         description = data.get('description')
-        num_available = data.get('num_available') or None  # Handle empty string as None
-        quantity_available = data.get('quantity_available') or None  # Handle empty string as None
+        num_available = data.get('num_available') or None
+        quantity_available = data.get('quantity_available') or None
         unit = data.get('unit')
 
-        # Additional validations
         if not name:
             return jsonify({'message': 'Product name is required'}), 400
         if not price:
@@ -509,7 +529,7 @@ def create_product_route():
 
         if quantity_available is not None and not unit:
             return jsonify({'message': 'Unit must be provided if quantity available is specified.'}), 400
-        
+
         if quantity_available is None:
             unit = None
 
@@ -520,11 +540,12 @@ def create_product_route():
             farmer_id=farmer_id,
             num_available=num_available,
             quantity_available=quantity_available,
-            unit=unit
+            unit=unit,
+            image_path=image_path  # Save image path in the database
         )
         db.session.add(new_product)
         db.session.commit()
-        return jsonify({'id': new_product.id, 'message': 'Product created successfully'}), 201
+        return jsonify({'id': new_product.id, 'message': 'Product created successfully', 'image_path': image_path}), 201
     except Exception as e:
         print("Error:", e)
         return jsonify({'error': str(e)}), 422
@@ -558,16 +579,29 @@ def get_orders_by_farmer(farmer_id):
         
     return order_list
 
-@bp.route('/farmer/orders', methods=['GET'])
+@bp.route('/farmer/orders', methods=['OPTIONS', 'GET'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def view_orders_by_farmer():
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'farmer':
-        return jsonify({'message': 'Unauthorized access'}), 403
-    farmer_id = current_user['id']
-    orders = get_orders_by_farmer(farmer_id)
-    return jsonify({'orders': orders}), 200
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request handled'})
+        response.status_code = 204
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'GET,OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        return response
+
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] != 'farmer':
+            return jsonify({'message': 'Unauthorized access'}), 403
+        farmer_id = current_user['id']
+        orders = get_orders_by_farmer(farmer_id)
+        print("Orders fetched:", orders)  # Log the orders for verification
+        return jsonify({'orders': orders}), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': str(e)}), 422
 
 #Update Product
 @bp.route('/products/update', methods=['PUT'])
