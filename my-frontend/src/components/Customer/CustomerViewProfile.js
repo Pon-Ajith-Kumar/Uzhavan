@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './CustomerProfile.css'; // Ensure you have a separate CSS file for styling the customer's profile
+import './CustomerProfile.css';
 
 function CustomerViewProfile() {
   const [profile, setProfile] = useState({});
@@ -16,20 +16,20 @@ function CustomerViewProfile() {
   }, []);
 
   const fetchProfile = () => {
-    axios.get('http://localhost:5000/profile', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true
-    })
-    .then(response => {
-      console.log('Profile data fetched:', response.data); // Debug: Log profile data
-      setProfile(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching profile:', error);
-    });
+    axios
+      .get('http://localhost:5000/profile', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then((response) => {
+        setProfile(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile:', error);
+      });
   };
 
   const handleProfileChange = (e) => {
@@ -37,165 +37,256 @@ function CustomerViewProfile() {
   };
 
   const updateProfile = () => {
-    console.log('Attempting to update profile with:', profile); // Log the profile data before sending the request
-    axios.put('http://localhost:5000/profile', profile, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true
-    })
-    .then(response => {
-      console.log('Profile updated successfully:', response.data); // Log the updated profile data
-      setProfile(response.data); // Update the state with the new profile data
-      setEditMode(false);
-      toast.success('Profile updated successfully!'); // Show success message
-      fetchProfile(); // Re-fetch profile data to ensure it's up-to-date
-    })
-    .catch(error => {
-      console.error('Error updating profile:', error);
-      if (error.response) {
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Request data:', error.request);
-      } else {
-        console.error('Error message:', error.message);
-      }
-      console.error('Config data:', error.config);
-      toast.error('Failed to update profile.'); // Show error message
-    });
+    axios
+      .put('http://localhost:5000/profile', profile, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then(() => {
+        setEditMode(false);
+        toast.success('Profile updated successfully!');
+        fetchProfile();
+      })
+      .catch(() => {
+        toast.error('Failed to update profile.');
+      });
   };
 
   const changePassword = () => {
-    axios.put('http://localhost:5000/change_password', { oldPassword, newPassword }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true
-    })
-    .then(() => {
-      setPasswordChangeMode(false);
-      setOldPassword('');
-      setNewPassword('');
-      toast.success('Password changed successfully!'); // Show success message
-    })
-    .catch(error => {
-      console.error('Error changing password:', error);
-      if (error.response) {
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Request data:', error.request);
-      } else {
-        console.error('Error message:', error.message);
-      }
-      console.error('Config data:', error.config);
-      toast.error('Failed to change password.'); // Show error message
-    });
+    axios
+      .put(
+        'http://localhost:5000/change_password',
+        { oldPassword, newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        setPasswordChangeMode(false);
+        setOldPassword('');
+        setNewPassword('');
+        toast.success('Password changed successfully!');
+      })
+      .catch(() => {
+        toast.error('Failed to change password.');
+      });
   };
 
   return (
     <div className="view-profile">
       <ToastContainer />
-      <h2>Customer Profile</h2>
-      <div>
-        <p>Username: {profile.username || 'Loading...'}</p>
-        <p>Email: {profile.email || 'Loading...'}</p>
-        <p>Contact: {profile.contact || 'Loading...'}</p>
-        <p>Country: {profile.country || 'Loading...'}</p>
-        <p>State: {profile.state || 'Loading...'}</p>
-        <p>District: {profile.district || 'Loading...'}</p>
-        <p>Taluk: {profile.taluk || 'Loading...'}</p>
-        <p>Address: {profile.address || 'Loading...'}</p>
-        <p>Pincode: {profile.pincode || 'Loading...'}</p>
-        <p>Account Number: {profile.account_no || 'Loading...'}</p>
-        <p>Account Holder Name: {profile.account_holder_name || 'Loading...'}</p>
-        <p>Bank Name: {profile.bank_name || 'Loading...'}</p>
-        <p>Branch Name: {profile.branch_name || 'Loading...'}</p>
-        <p>IFSC Code: {profile.ifsc_code || 'Loading...'}</p>
-        <button onClick={() => setEditMode(true)}>Edit Profile</button>
-        <button onClick={() => setPasswordChangeMode(true)}>Change Password</button>
+      <div className="card">
+        <div className="card-header">
+          <h2>Customer Profile</h2>
+        </div>
+        <div className="card-body">
+          <p><span>Username</span> {profile.username || 'customeruser'}</p>
+          <p><span>Email</span> {profile.email || 'newuser@example.com'}</p>
+          <p><span>Contact</span> {profile.contact || '1234567899'}</p>
+          <p><span>Country</span> {profile.country || 'CountryName'}</p>
+          <p><span>State</span> {profile.state || 'StateName'}</p>
+          <p><span>District</span> {profile.district || 'DistrictName'}</p>
+          <p><span>Taluk</span> {profile.taluk || 'TalukName'}</p>
+          <p><span>Address</span> {profile.address || '123 Main St, Anytown'}</p>
+          <p><span>Pincode</span> {profile.pincode || '12345'}</p>
+          <p><span>Account Number</span> {profile.account_no || '123456789012'}</p>
+          <p><span>Account Holder Name</span> {profile.account_holder_name || 'Abc'}</p>
+          <p><span>Bank Name</span> {profile.bank_name || 'Bank Name'}</p>
+          <p><span>Branch Name</span> {profile.branch_name || 'Branch Name'}</p>
+          <p><span>IFSC Code</span> {profile.ifsc_code || 'IFSC1234'}</p>
+        </div>
+        <div className="card-actions">
+          <button className="action-button" onClick={() => setEditMode(true)}>
+            Edit Profile
+          </button>
+          <button className="action-button" onClick={() => setPasswordChangeMode(true)}>
+            Change Password
+          </button>
+        </div>
       </div>
 
       {editMode && (
-        <div>
-          <label>
-            Username:
-            <input type="text" name="username" value={profile.username || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Email:
-            <input type="email" name="email" value={profile.email || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Contact:
-            <input type="text" name="contact" value={profile.contact || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Country:
-            <input type="text" name="country" value={profile.country || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            State:
-            <input type="text" name="state" value={profile.state || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            District:
-            <input type="text" name="district" value={profile.district || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Taluk:
-            <input type="text" name="taluk" value={profile.taluk || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Address:
-            <input type="text" name="address" value={profile.address || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Pincode:
-            <input type="text" name="pincode" value={profile.pincode || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Account Number:
-            <input type="text" name="account_no" value={profile.account_no || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Account Holder Name:
-            <input type="text" name="account_holder_name" value={profile.account_holder_name || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Bank Name:
-            <input type="text" name="bank_name" value={profile.bank_name || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            Branch Name:
-            <input type="text" name="branch_name" value={profile.branch_name || ''} onChange={handleProfileChange} />
-          </label>
-          <label>
-            IFSC Code:
-            <input type="text" name="ifsc_code" value={profile.ifsc_code || ''} onChange={handleProfileChange} />
-          </label>
-          <button onClick={updateProfile}>Save</button>
-          <button onClick={() => setEditMode(false)}>Cancel</button>
+        <div className="card">
+          <div className="card-header">
+            <h2>Edit Profile</h2>
+          </div>
+          <div className="card-body">
+            <div className="form-group">
+              <label>Username:</label>
+              <input
+                type="text"
+                name="username"
+                value={profile.username || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={profile.email || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Contact:</label>
+              <input
+                type="text"
+                name="contact"
+                value={profile.contact || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Country:</label>
+              <input
+                type="text"
+                name="country"
+                value={profile.country || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>State:</label>
+              <input
+                type="text"
+                name="state"
+                value={profile.state || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>District:</label>
+              <input
+                type="text"
+                name="district"
+                value={profile.district || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Taluk:</label>
+              <input
+                type="text"
+                name="taluk"
+                value={profile.taluk || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Address:</label>
+              <input
+                type="text"
+                name="address"
+                value={profile.address || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Pincode:</label>
+              <input
+                type="text"
+                name="pincode"
+                value={profile.pincode || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Account Number:</label>
+              <input
+                type="text"
+                name="account_no"
+                value={profile.account_no || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Account Holder Name:</label>
+              <input
+                type="text"
+                name="account_holder_name"
+                value={profile.account_holder_name || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Bank Name:</label>
+              <input
+                type="text"
+                name="bank_name"
+                value={profile.bank_name || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Branch Name:</label>
+              <input
+                type="text"
+                name="branch_name"
+                value={profile.branch_name || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>IFSC Code:</label>
+              <input
+                type="text"
+                name="ifsc_code"
+                value={profile.ifsc_code || ''}
+                onChange={handleProfileChange}
+              />
+            </div>
+            <div className="card-actions">
+              <button className="action-button" onClick={updateProfile}>
+                Save Changes
+              </button>
+              <button className="cancel-button" onClick={() => setEditMode(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {passwordChangeMode && (
-        <div>
-          <label>
-            Old Password:
-            <input type="password" name="oldPassword" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
-          </label>
-          <label>
-            New Password:
-            <input type="password" name="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-          </label>
-          <button onClick={changePassword}>Change Password</button>
-          <button onClick={() => setPasswordChangeMode(false)}>Cancel</button>
+        <div className="card">
+          <div className="card-header">
+            <h2>Change Password</h2>
+          </div>
+          <div className="card-body">
+            <div className="form-group">
+              <label>Old Password:</label>
+              <input
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label>New Password:</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            <div className="card-actions">
+              <button className="action-button" onClick={changePassword}>
+                Change Password
+              </button>
+              <button className="cancel-button" onClick={() => setPasswordChangeMode(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
