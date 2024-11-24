@@ -80,8 +80,8 @@
   border-radius: 3px;
 }
 
-.edit-button {
-  background-color: #28a745; /* Green color for edit button */
+.update-button {
+  background-color: #28a745; /* Green color for update button */
   color: white;
 }
 
@@ -125,4 +125,58 @@
 
 .edit-form form button:hover {
   background-color: #218838;
+}
+
+/* Additional Styles for Modal */
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 80%;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 20px; /* Add space between the buttons */
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-actions button:hover {
+  background-color: #45a049;
+}
+
+.modal-actions button:last-child {
+  background-color: #f44336;
+}
+
+.modal-actions button:last-child:hover {
+  background-color: #e53935;
 }
