@@ -25,6 +25,7 @@ import CancelOrder from './components/Customer/CancelOrder';
 import ViewProfile from './components/Admin/ViewProfile'; // Import the ViewProfile component
 import FarmerViewProfile from './components/Farmer/FarmerViewProfile'; // Import the FarmerViewProfile component
 import CustomerViewProfile from './components/Customer/CustomerViewProfile'; // Import the CustomerViewProfile component
+import CustomerProductList from './components/Customer/CustomerProductList'; // Import the CustomerProductList component
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
           <Route path="view-billing-reports" element={<ViewBillingReportsCustomer />} />
           <Route path="track-order-status" element={<TrackOrderStatus />} />
           <Route path="cancel-order" element={<CancelOrder />} />
+          <Route path="uzhavan-store-c" element={<CustomerProductList />} /> {/* Add route for Uzhavan Store C */}
         </Route>
       </Routes>
     </Router>

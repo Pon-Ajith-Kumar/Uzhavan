@@ -32,7 +32,6 @@ function ViewOrders() {
             <div key={order.id} className="order-card">
               <h3 className="product-name">{order.product_name}</h3>
               <p><strong>Order ID:</strong> {order.id}</p>
-              <p><strong>Quantity:</strong> {order.quantity}</p>
               <p><strong>Status:</strong> {order.status}</p>
             </div>
           ))

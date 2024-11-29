@@ -49,8 +49,39 @@ function Register() {
     setFormData({ ...formData, district: selectedOption.value, taluk: '' });
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateContact = (contact) => {
+    const contactRegex = /^\d{10}$/; // Assuming a 10-digit contact number
+    return contactRegex.test(contact);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+      setMessage(`UZHAVAN SAYS\nPlease enter a valid email address.`);
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 5000);
+      if (messageRef.current) {
+        messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    if (!validateContact(formData.contact)) {
+      setMessage(`UZHAVAN SAYS\nPlease enter a valid contact number.`);
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 5000);
+      if (messageRef.current) {
+        messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
     for (const field in formData) {
       if (!formData[field]) {
         setMessage(`UZHAVAN SAYS\nPlease fill in the ${field.replace('_', ' ')} field.`);
@@ -62,6 +93,7 @@ function Register() {
         return;
       }
     }
+
     try {
       const response = await axios.post('http://localhost:5000/register', formData);
       setMessage(`UZHAVAN SAYS\n${response.data.message}`);

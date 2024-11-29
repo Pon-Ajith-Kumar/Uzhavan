@@ -89,6 +89,7 @@ def register():
     address = data.get('address')
     pincode = data.get('pincode')
     account_no = data.get('account_no')
+    account_holder_name = data.get('account_holder_name')
     bank_name = data.get('bank_name')
     branch_name = data.get('branch_name')
     ifsc_code = data.get('ifsc_code')
@@ -111,7 +112,7 @@ def register():
 
     # Hash the password before saving it
     hashed_password = generate_password_hash(password)
-    create_user(username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, bank_name, branch_name, ifsc_code)
+    create_user(username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, account_holder_name, bank_name, branch_name, ifsc_code)
 
     return jsonify({'message': 'User registered successfully'}), 201
 
@@ -665,6 +666,7 @@ def update_product():
     db.session.commit()
     return jsonify({'message': 'Product updated successfully'})
 
+
 @bp.route('/products/delete', methods=['DELETE'])
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
@@ -675,30 +677,41 @@ def delete_product():
         current_user = get_jwt_identity()
 
         # Log incoming data for debugging
-        app.logger.info(f'Received data for deletion: {data}')
+        current_app.logger.info(f'Received data for deletion: {data}')
 
         if not product_id:
-            app.logger.error('Product ID is required')
+            current_app.logger.error('Product ID is required')
             return jsonify({'message': 'Product ID is required'}), 400
 
         product = Product.query.get(product_id)
 
         if not product:
-            app.logger.error(f'Product {product_id} not found')
+            current_app.logger.error(f'Product {product_id} not found')
             return jsonify({'message': 'Product not found'}), 404
 
         if product.farmer_id != current_user['id']:
-            app.logger.error(f'Unauthorized attempt to delete product {product_id} by user {current_user["id"]}')
+            current_app.logger.error(f'Unauthorized attempt to delete product {product_id} by user {current_user["id"]}')
             return jsonify({'message': 'Unauthorized: You can only delete products you created'}), 403
 
+        # Log associated orders before deletion
+        orders_associated = Order.query.filter_by(product_id=product_id).all()
+        current_app.logger.info(f'Associated orders before deletion: {orders_associated}')
+
         db.session.delete(product)
-        db.session.commit()
-        app.logger.info(f'Product {product_id} deleted successfully')
-        return jsonify({'message': 'Product deleted successfully'})
+        db.session.commit()  # Commit here to ensure associated orders are deleted
+
+        current_app.logger.info(f'Product {product_id} deleted successfully along with associated orders')
+
+        # Check remaining orders after deletion
+        remaining_orders = Order.query.filter_by(product_id=product_id).all()
+        current_app.logger.info(f'Remaining orders after deletion: {remaining_orders}')
+
+        return jsonify({'message': 'Product and associated orders deleted successfully'})
 
     except Exception as e:
-        app.logger.error(f'Error deleting product {product_id}: {e}', exc_info=True)
-        return jsonify({'message': 'Internal server error'}), 500
+        current_app.logger.error(f'Error deleting product {product_id}: {e}', exc_info=True)
+        return jsonify({'message': f'Internal server error: {str(e)}'}), 500
+
 
 #Accept Order
 def accept_order(order_id):

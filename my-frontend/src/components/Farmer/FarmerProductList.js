@@ -10,7 +10,6 @@ Modal.setAppElement('#root'); // Set the root element for accessibility
 function FarmerProductList() {
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [productToDelete, setProductToDelete] = useState(null); // State to track the product to delete
   const [productDetails, setProductDetails] = useState({
     id: '',
     name: '',
@@ -43,48 +42,55 @@ function FarmerProductList() {
 
   const handleEdit = (product) => {
     setEditingProduct(product.id);
-    setProductDetails(product);
+    setProductDetails({
+      id: product.id,
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price || '',
+      num_available: product.num_available || '',
+      quantity_available: product.quantity_available || '',
+      unit: product.unit || ''
+    });
   };
 
   const handleUpdate = async () => {
+    const updatedProductDetails = {
+      id: productDetails.id,
+      name: productDetails.name,
+      description: productDetails.description,
+      price: productDetails.price,
+    };
+
+    if (productDetails.num_available) {
+      updatedProductDetails.num_available = productDetails.num_available;
+    } else if (productDetails.quantity_available && productDetails.unit) {
+      updatedProductDetails.quantity_available = productDetails.quantity_available;
+      updatedProductDetails.unit = productDetails.unit;
+    } else {
+      toast.error('Please provide either Number Available or Quantity Available and Unit.');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('access_token');
-      await axios.put('http://localhost:5000/products/update', productDetails, {
+      console.log('Updating product with details:', updatedProductDetails); // Log product details
+      await axios.put('http://localhost:5000/products/update', updatedProductDetails, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEditingProduct(null);
-      toast.success('Product updated successfully!'); // Show success message
+      toast.success('Product updated successfully!');
       fetchProducts();
     } catch (error) {
       setError(error.message || 'Network Error');
-      console.error('Error updating product:', error);
+      if (error.response) {
+        console.error('Server responded with:', error.response.data); // Log server response
+        toast.error(`Failed to update product: ${error.response.data.message || 'Unknown error'}`);
+      } else {
+        console.error('Error updating product:', error); // Log the full error
+      }
     }
   };
 
-  const confirmDelete = (productId) => {
-    setProductToDelete(productId);
-  };
-
-  const handleDelete = async () => {
-    if (!productToDelete) return;
-  
-    try {
-      const token = localStorage.getItem('access_token');
-      console.log('Deleting product with ID:', productToDelete); // Log the product ID
-      await axios.delete('http://localhost:5000/products/delete', {
-        headers: { Authorization: `Bearer ${token}` },
-        data: { id: productToDelete } // Ensure the correct data is sent
-      });
-      setProductToDelete(null);
-      toast.success('Product deleted successfully!'); // Show success message
-      fetchProducts();
-    } catch (error) {
-      setError(error.message || 'Network Error');
-      console.error('Error deleting product:', error);
-      toast.error('Failed to delete product. Please try again.'); // Show error message to the user
-    }
-  };
-        
   const handleChange = (e) => {
     setProductDetails({
       ...productDetails,
@@ -126,7 +132,6 @@ function FarmerProductList() {
                 <p><strong>Unit:</strong> {product.unit || 'N/A'}</p>
                 <div className="product-actions">
                   <button className="update-button" onClick={() => handleEdit(product)}>Update</button>
-                  <button className="delete-button" onClick={() => confirmDelete(product.id)}>Delete</button>
                 </div>
               </div>
             </div>
@@ -167,6 +172,7 @@ function FarmerProductList() {
               name="quantity_available"
               value={productDetails.quantity_available}
               onChange={handleChange}
+              disabled={!!productDetails.num_available} // Disable if num_available is provided
             />
             <label>Number Available:</label>
             <input
@@ -174,6 +180,7 @@ function FarmerProductList() {
               name="num_available"
               value={productDetails.num_available}
               onChange={handleChange}
+              disabled={!!productDetails.quantity_available} // Disable if quantity_available is provided
             />
             <label>Unit:</label>
             <input
@@ -181,6 +188,7 @@ function FarmerProductList() {
               name="unit"
               value={productDetails.unit}
               onChange={handleChange}
+              disabled={!!productDetails.num_available} // Disable if num_available is provided
             />
             <button type="button" onClick={handleUpdate}>
               Update
@@ -191,22 +199,6 @@ function FarmerProductList() {
           </form>
         </div>
       )}
-
-      {/* Confirmation Modal for Deleting Product */}
-      <Modal
-        isOpen={!!productToDelete}
-        onRequestClose={() => setProductToDelete(null)}
-        contentLabel="Confirm Delete"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <h2>Confirm Delete</h2>
-        <p>Are you sure you want to delete this product?</p>
-        <div className="modal-actions">
-          <button onClick={() => handleDelete()}>Yes</button>
-          <button onClick={() => setProductToDelete(null)}>No</button>
-        </div>
-      </Modal>
     </div>
   );
 }
