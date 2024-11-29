@@ -433,26 +433,29 @@ def get_all_orders():
 @cross_origin(origins='http://localhost:3000')
 @jwt_required()
 def get_orders():
+    current_user = get_jwt_identity()
+    if current_user['role'] != 'admin':
+        return jsonify({'message': 'Unauthorized access'}), 403
+
     try:
-        current_user = get_jwt_identity()
-        if current_user['role'] != 'admin':
-            return jsonify({'message': 'Unauthorized access'}), 403
-        
         orders = Order.query.all()
-        
-        orders_list = []
+        result = []
         for order in orders:
             product = Product.query.get(order.product_id)
-            orders_list.append({
+            customer = User.query.get(order.customer_id)
+            farmer = User.query.get(product.farmer_id)
+            order_data = {
                 'id': order.id,
+                'product_name': product.name,
                 'status': order.status,
-                'product_name': product.name if product else 'N/A'
-            })
+                'customer_name': customer.username if customer else 'Unknown',
+                'farmer_name': farmer.username if farmer else 'Unknown'
+            }
+            result.append(order_data)
 
-        return jsonify({'orders': orders_list})
-
+        return jsonify({'orders': result}), 200
     except Exception as e:
-        print(f'Error fetching orders: {e}')
+        current_app.logger.error(f'Error fetching orders: {e}', exc_info=True)
         return jsonify({'message': 'Internal server error'}), 500
 
 

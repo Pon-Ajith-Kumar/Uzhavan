@@ -10,7 +10,7 @@ function ViewBillingReports() {
     const fetchBillingReports = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get('http://localhost:5000/admin/billing_reports', {
+        const response = await axios.get('http://localhost:5000/admin/billing_report', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -54,7 +54,6 @@ function ViewBillingReports() {
                   <p><b>Product Name:</b> {report.product_name}</p>
                   <p><b>Price:</b> ₹{report.price}</p>
                   <p><b>Status:</b> {report.status}</p>
-                  <p><b>Details:</b> {report.details}</p>
                 </div>
               ))}
             </div>
