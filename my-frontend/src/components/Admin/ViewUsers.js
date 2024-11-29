@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaTrashAlt } from 'react-icons/fa'; // Import trash icon
 import Modal from 'react-modal'; // Import Modal
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './ViewUsers.css'; // Import the CSS file
 
 Modal.setAppElement('#root'); // This is important for screen readers
@@ -13,6 +14,7 @@ function ViewUsers() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteAllModalIsOpen, setDeleteAllModalIsOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -80,6 +82,7 @@ function ViewUsers() {
       setUsers([]); // Clear users list after deletion
       toast.success('All users deleted and auto-increment reset successfully');
       closeDeleteAllModal();
+      navigate('/'); // Navigate to the home page after deletion
     } catch (error) {
       console.error('Error deleting users:', error);
       toast.error('Failed to delete all users.');

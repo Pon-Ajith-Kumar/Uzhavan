@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './FarmerOrders.css'; // Ensure you have the CSS file for styling
 
-Modal.setAppElement('#root'); // Set the root element for accessibility
-
 function FarmerOrders() {
   const [orders, setOrders] = useState([]);
-  const [orderToConfirm, setOrderToConfirm] = useState(null); // State to track the order and action to confirm
-  const [actionToConfirm, setActionToConfirm] = useState(null); // State to track the action to confirm
 
   useEffect(() => {
     fetchOrders();
@@ -47,23 +42,8 @@ function FarmerOrders() {
       fetchOrders();
     } catch (error) {
       console.error(`Error with action ${action} for order ${orderId}:`, error);
+      toast.error(`Failed to ${action} order.`);
     }
-  };
-
-  const confirmOrderAction = (orderId, action) => {
-    setOrderToConfirm(orderId);
-    setActionToConfirm(action);
-  };
-
-  const handleConfirmAction = () => {
-    handleOrderAction(orderToConfirm, actionToConfirm);
-    setOrderToConfirm(null);
-    setActionToConfirm(null);
-  };
-
-  const handleCloseModal = () => {
-    setOrderToConfirm(null);
-    setActionToConfirm(null);
   };
 
   return (
@@ -89,15 +69,15 @@ function FarmerOrders() {
                 <div className="order-actions">
                   {order.status === 'pending' && (
                     <>
-                      <button className="accept-button" onClick={() => confirmOrderAction(order.id, 'accept')}>Accept</button>
-                      <button className="reject-button" onClick={() => confirmOrderAction(order.id, 'reject')}>Reject</button>
+                      <button className="accept-button" onClick={() => handleOrderAction(order.id, 'accept')}>Accept</button>
+                      <button className="reject-button" onClick={() => handleOrderAction(order.id, 'reject')}>Reject</button>
                     </>
                   )}
                   {order.status === 'accepted' && (
-                    <button className="ship-button" onClick={() => confirmOrderAction(order.id, 'ship')}>Ship</button>
+                    <button className="ship-button" onClick={() => handleOrderAction(order.id, 'ship')}>Ship</button>
                   )}
                   {order.status === 'shipped' && (
-                    <button className="deliver-button" onClick={() => confirmOrderAction(order.id, 'deliver')}>Deliver</button>
+                    <button className="deliver-button" onClick={() => handleOrderAction(order.id, 'deliver')}>Deliver</button>
                   )}
                 </div>
               </div>
@@ -107,22 +87,6 @@ function FarmerOrders() {
           <p>No orders found.</p>
         )}
       </div>
-
-      {/* Confirmation Modal for Order Actions */}
-      <Modal
-        isOpen={!!orderToConfirm}
-        onRequestClose={handleCloseModal}
-        contentLabel="Confirm Action"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <h2>Confirm Action</h2>
-        <p>Are you sure you want to {actionToConfirm} this order?</p>
-        <div className="modal-actions">
-          <button onClick={handleConfirmAction}>Yes</button>
-          <button onClick={handleCloseModal}>No</button>
-        </div>
-      </Modal>
     </div>
   );
 }

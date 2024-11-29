@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { ToastContainer, toast } from 'react-toastify';
@@ -20,10 +20,17 @@ function FarmerProductList() {
     unit: ''
   });
   const [error, setError] = useState(null);
+  const editFormRef = useRef(null);
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (editingProduct !== null) {
+      editFormRef.current.focus();
+    }
+  }, [editingProduct]);
 
   const fetchProducts = async () => {
     try {
@@ -151,6 +158,7 @@ function FarmerProductList() {
               name="name"
               value={productDetails.name}
               onChange={handleChange}
+              ref={editFormRef}
             />
             <label>Description:</label>
             <input

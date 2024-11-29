@@ -61,11 +61,12 @@ def is_admin_username(username):
     conn.close()
     return count > 0
 
-def create_user(username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, bank_name, branch_name, ifsc_code):
+def create_user(username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, account_holder_name, bank_name, branch_name, ifsc_code):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute('INSERT INTO users (username, password, role, email, contact, country, state, district, taluk, address, pincode, account_no, bank_name, branch_name, ifsc_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, bank_name, branch_name, ifsc_code))
+        cursor.execute('INSERT INTO users (username, password, role, email, contact, country, state, district, taluk, address, pincode, account_no, account_holder_name, bank_name, branch_name, ifsc_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', 
+                       (username, hashed_password, role, email, contact, country, state, district, taluk, address, pincode, account_no, account_holder_name, bank_name, branch_name, ifsc_code))
         conn.commit()
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -256,9 +257,8 @@ def change_password():
         print(f"Error during change_password: {e}")
         return jsonify({'message': 'Internal Server Error'}), 500
 
-
 # Admin Routes
-#View all users / Delete all users
+# View all users / Delete all users
 def get_all_users():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -272,12 +272,21 @@ def delete_all_users():
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
+        # Delete related rows in billing_reports and purchase_requests first
+        cursor.execute('DELETE FROM billing_reports')
+        cursor.execute('DELETE FROM purchase_requests')
+        conn.commit()
+
+        # Then delete rows in orders, products, and users
         cursor.execute('DELETE FROM orders')
         cursor.execute('DELETE FROM products')
         cursor.execute('DELETE FROM users')
+        
+        # Reset auto-increment values
         cursor.execute('ALTER TABLE users AUTO_INCREMENT = 1')
         cursor.execute('ALTER TABLE products AUTO_INCREMENT = 1')
         cursor.execute('ALTER TABLE orders AUTO_INCREMENT = 1')
+        
         conn.commit()
     except mysql.connector.errors.DatabaseError as e:
         if e.errno == 1205:
