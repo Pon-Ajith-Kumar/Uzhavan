@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import { Country, State, City } from 'country-state-city';
-import Navbar from './Navbar'; // Import your Navbar component
+import Navbar from './Navbar'; 
 import './Register.css';
-import registerImage from '../assets/images/register-image.jpg'; // Ensure this image path is correct
+import registerImage from '../assets/images/register-image.jpg'; 
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
