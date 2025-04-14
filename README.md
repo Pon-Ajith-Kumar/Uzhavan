@@ -1,2 +1,2 @@
 # agrisales
-An Agri Sales Management App
+An Agricultural Sales Management Mini Project
