@@ -1,0 +1,80 @@
+# Backend files (except models.py and controller.py)
+backend/config.py
+backend/manage.py
+backend/requirements.txt
+backend/run.py
+backend/.env
+
+# Backend app files (except models.py and controller.py)
+backend/app/__init__.py
+backend/app/db_config.py
+backend/app/routes.py
+
+# Python cache files
+backend/app/__pycache__/
+backend/__pycache__/
+
+# Database migrations
+backend/migrations/
+
+# Python virtual environment
+backend/venv/
+backend/env/
+backend/.venv/
+
+# Python compiled files
+*.pyc
+__pycache__/
+
+# Frontend dependencies
+my-frontend/node_modules/
+my-frontend/.pnp
+my-frontend/.pnp.js
+
+# Frontend testing
+my-frontend/coverage/
+
+# Frontend production build
+my-frontend/build/
+
+# Frontend environment files
+my-frontend/.env.local
+my-frontend/.env.development.local
+my-frontend/.env.test.local
+my-frontend/.env.production.local
+
+# Frontend logs
+my-frontend/npm-debug.log*
+my-frontend/yarn-debug.log*
+my-frontend/yarn-error.log*
+
+# General dependencies (if any frontend/backend at root)
+node_modules/
+/.pnp
+.pnp.js
+
+# General testing
+coverage/
+
+# General production build
+build/
+
+# General environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# General logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
