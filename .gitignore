@@ -2,7 +2,6 @@
 backend/config.py
 backend/manage.py
 backend/requirements.txt
-backend/run.py
 backend/.env
 
 # Backend app files (except models.py and controller.py)
