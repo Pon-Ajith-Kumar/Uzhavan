@@ -1,0 +1,39 @@
+.customer-vertical-nav {
+    width: 200px; /* Slightly decreased width */
+    background-color: #4CAF50; /* Main green color */
+    color: white;
+    padding: 20px;
+    padding-top: 60px; /* Add padding at the top to avoid being hidden by the top navbar */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: fixed;
+    top: 60px; /* Align under the top navbar */
+    left: 0;
+    height: calc(100vh - 60px); /* Adjust height to account for the top navbar */
+  }
+  
+  .customer-vertical-nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .customer-vertical-nav li {
+    margin-bottom: 15px;
+  }
+  
+  .customer-vertical-nav a {
+    text-decoration: none;
+    color: #2e7d32; /* Dark green color */
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1.1rem; /* Increase font size */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Add hover transition */
+  }
+  
+  .customer-vertical-nav a:hover {
+    background-color: #4CAF50; /* Green on hover */
+    color: white; /* White text on hover */
+  }
+  

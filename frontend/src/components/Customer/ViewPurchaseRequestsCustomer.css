@@ -1,0 +1,53 @@
+.customer-container {
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fb; /* Soft background color for the container */
+    min-height: 100vh; /* Ensure it fits the full height of the viewport */
+  }
+  
+  .customer-container h2 {
+    color: #2c3e50; /* Dark blue-gray color for the heading */
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700; /* Slightly bolder for better emphasis */
+  }
+  
+  .purchase-request-list {
+    display: flex;
+    flex-direction: column; /* Ensure one block per row */
+    gap: 20px; 
+  }
+  
+  .purchase-request-card {
+    border: 1px solid #bdc3c7; /* Light gray border for subtlety */
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%; /* Ensure it expands to the full width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+    background-color: #ffffff; /* White background for the cards */
+    padding: 20px;
+  }
+  
+  .purchase-request-card:hover {
+    transform: translateY(-10px); /* Slight lift on hover for interactivity */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  }
+  
+  .purchase-request-card p {
+    font-size: 16px;
+    color: #34495e; /* Darker shade for text */
+    margin: 5px 0; /* Spacing between lines */
+  }
+  
+  .purchase-request-card p b {
+    color: #2c3e50; /* Consistent color for bold text */
+  }
+  
+  .error-message {
+    color: #e74c3c; /* Red color for error messages */
+    margin: 20px 0;
+    text-align: center;
+  }
+  

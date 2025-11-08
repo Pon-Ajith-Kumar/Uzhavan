@@ -1,0 +1,116 @@
+.card {
+  background: #f5faf5;
+  border: 2px solid #8e9b73; /* Olive-green theme */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 100%;
+  max-width: 900px;
+}
+
+.card-header {
+  background: #d9f2d9; /* Light green for headers */
+  padding: 15px;
+  text-align: center;
+  border-bottom: 2px solid #8e9b73;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #3c573c;
+  font-family: 'Roboto', sans-serif;
+}
+
+.card-body {
+  padding: 20px;
+  color: #2e3d2e;
+  line-height: 1.8;
+}
+
+.card-body label {
+  font-weight: 600;
+  color: #4b604b;
+}
+
+.card-body p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  text-align: left; /* Ensure the text is aligned left */
+}
+
+.card-body p span {
+  font-weight: bold; /* Bold the label text before colon */
+}
+
+.card-body p span::after {
+  content: ":"; 
+  font-size: 1.2em; /* Make colon larger */
+}
+
+.card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.action-button {
+  background-color: #6ca965;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  margin: 10px 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.action-button:hover {
+  background-color: #5e9456;
+}
+
+.cancel-button {
+  background-color: #e63946; /* Red color for cancel button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d42f31;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  gap: 12px; /* Add vertical spacing between the input fields */
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #8e9b73;
+  border-radius: 5px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 95%;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+}
