@@ -19,7 +19,7 @@
 - [Running the Application](#-running-the-application)
 - [Project Structure](#-project-structure)
 - [Backend Architecture](#-backend-architecture)
-- [API Documentation](#-api-documentation)
+- [API Documentation](#api-documentation)
 - [Frontend Architecture](#-frontend-architecture)
 - [Database Schema](#-database-schema)
 - [User Roles & Permissions](#-user-roles--permissions)
