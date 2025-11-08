@@ -1,0 +1,182 @@
+.farmer-product-list {
+  padding: 20px;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.product-card {
+  background-color: #fff;
+  border: 2px solid #28a745; /* Green border for each product block */
+  border-radius: 10px; /* Add some border radius for styling */
+  overflow: hidden;
+  width: calc(50% - 20px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add some shadow for a stylish effect */
+  transition: transform 0.2s; /* Add transition for hover effect */
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Add a lift-up effect on hover */
+}
+
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px; /* Fixed height for the image container */
+  background-color: #f0f0f0; /* Light grey background for the container */
+}
+
+.image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #888; /* Grey color for the placeholder text */
+  font-size: 16px;
+}
+
+.product-info {
+  padding: 10px;
+}
+
+.product-info .product-name {
+  margin: 0;
+  font-size: 24px; /* Increase font size for the product name */
+  font-weight: bold;
+  text-align: center; /* Center the Product Name */
+}
+
+.product-info p {
+  margin: 5px 0; /* Add spacing between paragraphs */
+}
+
+.product-info p strong {
+  display: inline-block;
+  width: 150px; /* Fixed width for labels */
+}
+
+.product-actions {
+  display: flex;
+  flex-direction: column; /* Align buttons vertically */
+  gap: 10px; /* Add some space between the buttons */
+  margin-top: 10px;
+}
+
+.product-actions button {
+  padding: 8px 12px; /* Basic padding for buttons */
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.update-button {
+  background-color: #28a745; /* Green color for update button */
+  color: white;
+}
+
+.delete-button {
+  background-color: #d9534f; /* Red color for delete button */
+  color: white;
+}
+
+.edit-form {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.edit-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-form form label {
+  margin-bottom: 5px;
+}
+
+.edit-form form input {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.edit-form form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.edit-form form button:hover {
+  background-color: #218838;
+}
+
+/* Additional Styles for Modal */
+.modal {
+  position: fixed; /* Fixed positioning for better responsiveness */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%; /* Changed width to 90% for better responsiveness */
+  max-width: 500px; /* Set a max-width to ensure it doesn't become too large on large screens */
+  max-height: 90vh; /* Ensure the modal fits within the viewport height */
+  overflow-y: auto; /* Add vertical scroll if content overflows */
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 20px; /* Add space between the buttons */
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-actions button:hover {
+  background-color: #45a049;
+}
+
+.modal-actions button:last-child {
+  background-color: #f44336;
+}
+
+.modal-actions button:last-child:hover {
+  background-color: #e53935;
+}

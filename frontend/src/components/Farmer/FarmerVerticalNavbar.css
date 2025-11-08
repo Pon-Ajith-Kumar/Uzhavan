@@ -1,0 +1,33 @@
+.farmer-vertical-nav {
+    width: 220px;
+    background-color: #4CAF50; /* Main green color */
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .farmer-vertical-nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .farmer-vertical-nav li {
+    margin-bottom: 15px;
+  }
+  
+  .farmer-vertical-nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1.1rem; /* Increase font size */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Add hover transition */
+  }
+  
+  .farmer-vertical-nav a:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: translateX(5px); /* Slide effect on hover */
+  }
+  
