@@ -1,0 +1,70 @@
+.admin-navbar {
+  background-color: #4CAF50; /* Match home navbar green background color */
+  height: 50px; /* Consistent height */
+  display: flex;
+  justify-content: space-between; /* Space between admin info and signout button */
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* Ensure relative positioning for popup */
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+}
+
+.admin-icon {
+  font-size: 1.5rem; /* Adjust icon size */
+  color: white;
+  margin-right: 10px;
+}
+
+.admin-title {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.signout-button {
+  font-size: 1.2rem; /* Increase font size */
+  background: #4CAF50; /* Match green background color */
+  color: white; /* White text */
+  font-weight: bold; /* Bold text */
+  border: 2px solid #fff; /* Add a white border */
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center align text in button */
+  margin-left: auto; /* Push signout button to the right */
+}
+
+.signout-button:hover {
+  background: #45a049; /* Slightly darker green on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow effect on hover */
+}
+
+.popup-message {
+  position: fixed; /* Fixed positioning */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Offset for perfect centering */
+  background-color: white; /* White background */
+  color: #4CAF50; /* Green text */
+  padding: 20px 40px; /* Increase padding */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  z-index: 1000; /* Ensure it appears above other elements */
+  font-size: 2rem; /* Increase font size */
+  text-align: center; /* Center text */
+  font-weight: bold; /* Bold text */
+}

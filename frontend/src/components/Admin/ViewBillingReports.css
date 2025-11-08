@@ -1,0 +1,65 @@
+.admin-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fb; /* Soft background color for the container */
+  min-height: 100vh; /* Ensure it fits the full height of the viewport */
+}
+
+.admin-container h2 {
+  color: #2c3e50; /* Dark blue-gray color for the heading */
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700; /* Slightly bolder for better emphasis */
+}
+
+.customer-section {
+  margin-bottom: 40px;
+}
+
+.customer-section h3 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  background: linear-gradient(45deg, #2c3e50, #007bff); /* Gradient effect for customer name */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.billing-report-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.billing-report-card {
+  border: 1px solid #bdc3c7; /* Light gray border for subtlety */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+  background-color: #ffffff; /* White background for the cards */
+  padding: 20px;
+}
+
+.billing-report-card:hover {
+  transform: translateY(-10px); /* Slight lift on hover for interactivity */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.billing-report-card p {
+  font-size: 16px;
+  color: #34495e; /* Darker shade for text */
+  margin: 5px 0; /* Spacing between lines */
+}
+
+.billing-report-card p b {
+  color: #2c3e50; /* Consistent color for bold text */
+}
+
+.error-message {
+  color: #e74c3c; /* Red color for error messages */
+  margin: 20px 0;
+  text-align: center;
+}

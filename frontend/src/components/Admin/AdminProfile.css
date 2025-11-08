@@ -1,0 +1,140 @@
+/* Main content styling */
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #f7f9fc;
+}
+
+/* Card styling */
+.card {
+  width: 200%;
+  max-width: 1200px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 2px solid #8e9b73; /* Olive border for agriculture theme */
+}
+
+/* Card header styling */
+.card-header {
+  background-color: #e6f7e6; /* Light green background */
+  padding: 20px;
+  text-align: center;
+}
+
+.card-header h2 {
+  font-size: 1.8rem;
+  color: #5a6b42; /* Darker green for titles */
+  margin: 0;
+}
+
+/* Card body styling */
+.card-body {
+  padding: 20px;
+  background-color: #fafaf8;
+}
+
+.card-body label {
+  font-weight: bold;
+  color: #5a6b42;
+  font-size: 1.1rem;
+  display: inline-block;
+  width: 250px; /* Align labels */
+  margin-right: 20px; /* Added margin for spacing */
+}
+
+.card-body p {
+  margin: 10px 0;
+  font-size: 1.1em;
+  color: #364432;
+  line-height: 1.6;
+  text-align: left; /* Align text to the left */
+}
+
+.card-body input {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+/* Action buttons styling */
+.card-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.action-button {
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  font-size: 1.1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+  transform: translateY(-2px);
+}
+
+.cancel-button {
+  background-color: #f44336; /* Red color */
+  color: white;
+  font-size: 1.1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+  transform: translateY(-2px);
+}
+
+/* Center buttons in edit and password forms */
+.card-actions-center {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Add spacing between buttons */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+
+  .profile-header {
+    padding: 15px;
+  }
+
+  .profile-picture {
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-name {
+    font-size: 1.5rem;
+  }
+
+  /* Adjust label and input layout for smaller screens */
+  .card-body label {
+    width: auto;
+  }
+
+  .card-body input {
+    width: 100%;
+  }
+}

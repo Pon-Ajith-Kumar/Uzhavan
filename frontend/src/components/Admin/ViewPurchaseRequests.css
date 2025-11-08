@@ -1,0 +1,52 @@
+.admin-container {
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8; /* Light background color for the container */
+    min-height: 100vh; /* Ensure it fits the full height of the viewport */
+  }
+  
+  .admin-container h2 {
+    color: #006400; /* Dark green color */
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+  }
+  
+  .purchase-request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 20px; /* Add some padding to the sides */
+  }
+  
+  .purchase-request-card {
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%; /* Make the card take the full width */
+    max-width: 1200px; /* Add a max width to keep it visually appealing */
+    margin: 0 auto; /* Center the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff; /* White background for the cards */
+  }
+  
+  .purchase-request-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .purchase-request-card p {
+    font-size: 14px;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  .error-message {
+    color: red;
+    margin: 20px 0;
+  }
+  
