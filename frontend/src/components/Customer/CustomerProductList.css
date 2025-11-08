@@ -10,6 +10,23 @@
     overflow-y: auto; /* Make content scrollable */
   }
   
+.stock {
+  font-weight: bold;
+  color: green;
+  margin-bottom: 10px;
+}
+
+.out-of-stock-btn {
+  background-color: #999;
+  cursor: not-allowed;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+
   .customer-product-list-container h2 {
     color: #006400; /* Darker green color */
     margin-bottom: 20px;
