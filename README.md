@@ -431,7 +431,9 @@ Stores billing information after order delivery.
 router.get('/farmer/orders', authenticate, authorizeRole('farmer'), handler);
 ```
 
-### API Routes
+---
+
+## API Documentation
 
 #### Authentication Routes (`routes/auth.js`)
 - `POST /register` - Register new user
