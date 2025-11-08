@@ -27,7 +27,6 @@
 - [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 - [License](#-license)
-- [Troubleshooting](#-troubleshooting)
 - [Future Enhancements](#-future-enhancements)
 
 ---
@@ -830,62 +829,6 @@ We welcome contributions to Uzhavan! Here's how you can help:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### 1. Database Connection Error
-```
-Error: Unable to connect to database
-```
-**Solution:**
-- Ensure PostgreSQL is running
-- Check database credentials in `.env`
-- Verify database exists: `psql -U postgres -l`
-
-#### 2. Port Already in Use
-```
-Error: Port 5000 is already in use
-```
-**Solution:**
-```bash
-# Find process using port
-lsof -ti:5000
-
-# Kill process
-kill -9 <PID>
-```
-
-#### 3. CORS Error
-```
-Access to XMLHttpRequest blocked by CORS policy
-```
-**Solution:**
-- Ensure backend is running on port 5000
-- Frontend should be on port 3000
-- Check CORS configuration in `server.js`
-
-#### 4. JWT Token Error
-```
-Error: JWT token is invalid
-```
-**Solution:**
-- Clear browser localStorage
-- Login again
-- Check JWT_SECRET is set in `.env`
-
-#### 5. File Upload Fails
-```
-Error: ENOENT: no such file or directory
-```
-**Solution:**
-```bash
-cd backend
-mkdir uploads
-```
 
 ---
 
