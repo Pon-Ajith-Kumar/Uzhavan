@@ -1,0 +1,17 @@
+# Node dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Environment files
+backend/.env
+frontend/.env
+
+# Editor settings
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# Uploads (optional)
+backend/uploads/
