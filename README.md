@@ -24,8 +24,8 @@
 - [Database Schema](#-database-schema)
 - [User Roles & Permissions](#-user-roles--permissions)
 - [Workflow](#-workflow)
-- [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
+- [Contact](#-contact)
 - [License](#-license)
 - [Future Enhancements](#-future-enhancements)
 
@@ -822,7 +822,7 @@ We welcome contributions to Uzhavan! Here's how you can help:
 - Email: ponajithkumar2005@gmail.com
 - LinkedIn: [Pon Ajith Kumar P](www.linkedin.com/in/ponajithkumar2005/)
 
-**Project Link:** [https://github.com/yourusername/uzhavan-marketplace](https://github.com/yourusername/uzhavan-marketplace)
+**Project Link:** [Uzhavan](https://github.com/Pon-Ajith-Kumar/uzhavan-marketplace)
 
 ---
 
