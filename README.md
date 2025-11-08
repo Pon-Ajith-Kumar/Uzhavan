@@ -27,6 +27,7 @@
 - [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
 - [License](#-license)
+- [Troubleshooting](#-troubleshooting)
 - [Future Enhancements](#-future-enhancements)
 
 ---
