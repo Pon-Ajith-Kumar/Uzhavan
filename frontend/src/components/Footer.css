@@ -1,0 +1,103 @@
+/* src/components/Footer.css */
+footer {
+    background-color: #388E3C; /* Subtle green color */
+    color: white;
+    padding: 10px 20px; /* Add padding for a better look */
+    width: 100%;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adding some shadow for depth */
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px 0; /* Decrease padding to reduce footer size */
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+    text-align: left; /* Left-align the text */
+}
+
+.footer-section h3 {
+    margin-bottom: 8px; /* Slightly reduced margin */
+    font-size: 20px; /* Slightly increased text size */
+}
+
+.footer-section p, .footer-section ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 16px; /* Slightly increased text size */
+    text-align: left; /* Ensure text is left-aligned */
+}
+
+.footer-section.contact p {
+    font-size: 18px; /* Increased text size for contact details */
+    margin-bottom: 8px; /* Add some space for the contact details */
+}
+
+.footer-section.contact i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.footer-section.contact a {
+    color: white; /* Ensure link inherits white color */
+    text-decoration: none;
+}
+
+.footer-section.contact a:hover {
+    text-decoration: underline;
+}
+
+.footer-section ul li {
+    margin: 5px 0; /* Margin for better readability */
+}
+
+.footer-section ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    text-decoration: underline;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center; /* Center the social icons */
+    gap: 10px; /* Adjust spacing for better appearance */
+}
+
+.social-icons a {
+    color: white;
+    font-size: 18px; /* Font size for icons */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #333;
+}
+
+.center-text {
+    text-align: center;
+    font-size: 18px; /* Font size for center text */
+}
+
+.footer-bottom {
+    margin-top: 10px; /* Reduced margin-top to decrease footer size */
+    border-top: 1px solid white;
+    padding-top: 8px; /* Reduced padding-top */
+    font-size: 14px; /* Slightly reduced text size */
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+}

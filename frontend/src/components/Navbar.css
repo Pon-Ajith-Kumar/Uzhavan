@@ -1,0 +1,52 @@
+.navbar {
+  background: #4CAF50;
+  height: 50px; /* Reduced height */
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  padding: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: auto; /* Push other items to the right */
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Ensure no underline */
+}
+
+.logo {
+  height: 40px; /* Adjust the size of the logo */
+  width: 40px; /* Match height and width for circular shape */
+  border-radius: 50%; /* Make the logo circular */
+  padding: 5px; /* Adjust padding */
+  margin-right: 10px;
+}
+
+.logo-text {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 10px;
+  cursor: pointer; /* Make it clickable */
+  position: relative;
+  transition: text-shadow 0.3s ease; /* Add transition for smooth hover effect */
+}
+
+.logo-text:hover {
+  text-shadow: 0 0 5px white; /* Slight glow effect on hover */
+}
